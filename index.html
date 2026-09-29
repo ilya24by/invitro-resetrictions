@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Manrope', -apple-system, 'Segoe UI', sans-serif; color: #1A1A1A; background: #F4F8F9; -webkit-font-smoothing: antialiased; }
+  a { color: #0E8E9E; text-decoration: none; }
+  a:hover { color: #1AB7C9; text-decoration: underline; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid #0E8E9E; outline-offset: 1px; }
+  @keyframes sk { 0% { opacity: .5 } 50% { opacity: 1 } 100% { opacity: .5 } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+  ::placeholder { color: #A3ABB2; }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#F4F8F9">
+
+  <sc-if value="{{ notAuthed }}" hint-placeholder-val="{{ false }}">
+    <div style="min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr">
+      <div style="display:flex;flex-direction:column;justify-content:space-between;padding:40px 48px;background:#fff;border-right:1px solid #E2EAEC">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-weight:800;font-size:20px;letter-spacing:.5px;color:#1AB7C9">invitro</div>
+          <div style="border-left:1px solid #E2EAEC;padding-left:12px;font-weight:700;font-size:13.5px">Конструктор ограничений</div>
+        </div>
+        <div style="max-width:380px;width:100%;align-self:center">
+          <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.5px">Вход в систему</h1>
+          <div style="font-size:12.5px;color:#6D757C;margin:8px 0 24px">Доступ выдаётся через корпоративный AD/SSO по вашей учётной записи Инвитро.</div>
+          <button onClick="{{ signIn }}" style="width:100%;border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13.5px;padding:13px;border-radius:10px;box-shadow:0 2px 8px rgba(26,183,201,.28)">Войти через AD / SSO</button>
+
+        </div>
+        <div style="font-size:11.5px;color:#9AA2A9">Доступ только для сотрудников Инвитро.</div>
+      </div>
+      <div style="background:#EBF8FA;padding:48px;display:flex;flex-direction:column;justify-content:center;gap:16px">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#0E8E9E">О сервисе</div>
+        <div style="font-size:19px;font-weight:800;line-height:1.35;letter-spacing:-.3px;color:#0E5F6A;text-wrap:pretty">Централизованное управление бизнес-ограничениями Инвитро</div>
+        <div style="font-size:13.5px;color:#3E5257;line-height:1.6;text-wrap:pretty">Конструктор ограничений обеспечивает централизованное управление бизнес-ограничениями, применяемыми к комбинациям объектов медицинской и сервисной экосистемы Инвитро.</div>
+        <div style="font-size:13.5px;color:#3E5257;line-height:1.6;text-wrap:pretty">Он предоставляет системам-потребителям структурированную информацию об ограничениях в реальном времени по запросу.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+  <div>
+  <header style="height:56px;background:#fff;border-bottom:1px solid #E2EAEC;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:40">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-weight:800;font-size:19px;letter-spacing:.5px;color:#1AB7C9">invitro</div>
+      <div style="border-left:1px solid #E2EAEC;padding-left:12px;line-height:1.25">
+        <div style="font-weight:700;font-size:13.5px">Конструктор ограничений</div>
+        <div style="font-size:11px;color:#6D757C">Сервис управления ограничениями</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#5A6068;background:#EEF2F4;border:1px solid #E2EAEC;padding:5px 10px;border-radius:999px">Режим просмотра</span>
+      </sc-if>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#0E8E9E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">ИИ</div>
+        <div style="line-height:1.25">
+          <div style="font-size:12.5px;font-weight:600">Иван Иванов</div>
+          <div style="font-size:11px;color:#6D757C">i.ivanov@invitro.ru</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div style="display:grid;grid-template-columns:232px 1fr;align-items:start">
+
+    <aside style="background:#fff;border-right:1px solid #E2EAEC;min-height:calc(100vh - 56px);padding:16px 12px;position:sticky;top:56px;display:flex;flex-direction:column">
+      <div style="flex:1">
+        <sc-for list="{{ navGroups }}" as="g" hint-placeholder-count="3">
+          <div style="margin-bottom:14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#9AA2A9;padding:8px 10px">{{ g.title }}</div>
+            <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="3">
+              <div onClick="{{ n.go }}" style="{{ n.style }}">
+                <span style="display:flex;align-items:center;gap:10px">{{ n.label }}</span>
+                <span style="{{ n.countStyle }}">{{ n.count }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <div style="border-top:1px solid #E2EAEC;padding-top:12px">
+        <button onClick="{{ signOut }}" style="width:100%;display:flex;align-items:center;gap:10px;border:1px solid #E2EAEC;background:#fff;color:#5A6068;font-weight:700;font-size:12.5px;padding:10px 12px;border-radius:10px">↩ Выйти</button>
+      </div>
+    </aside>
+
+    <main style="padding:24px 28px 64px;max-width:1440px;width:100%">
+
+      <!-- ================= СПИСОК ОГРАНИЧЕНИЙ ================= -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px">
+            <div>
+              <h1 style="margin:0;font-size:23px;font-weight:800;letter-spacing:-.4px">Ограничения</h1>
+              <div style="font-size:12.5px;color:#6D757C;margin-top:4px">{{ listCountLabel }}</div>
+            </div>
+            <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ openWizard }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px;box-shadow:0 2px 8px rgba(26,183,201,.28)">+ Создать ограничение</button>
+            </sc-if>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+            <select value="{{ fType }}" onChange="{{ setFType }}" style="background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px 9px 16px;font-size:12.5px;font-weight:600;min-width:180px">
+              <sc-for list="{{ typeFilterOpts }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <select value="{{ fParam }}" onChange="{{ setFParam }}" style="background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px 9px 16px;font-size:12.5px;font-weight:600;min-width:150px">
+              <sc-for list="{{ paramFilterOpts }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <select value="{{ fSubject }}" onChange="{{ setFSubject }}" style="background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px 9px 16px;font-size:12.5px;font-weight:600;min-width:170px">
+              <sc-for list="{{ subjectFilterOpts }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px;min-width:280px;flex:1">
+              <span style="color:#9AA2A9;font-size:12.5px;font-weight:600">Поиск</span>
+              <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Поиск по названию или id ограничения" style="border:none;outline:none;background:transparent;flex:1;font-size:12.5px">
+              <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ clearQuery }}" style="border:none;background:#EEF2F4;color:#5A6068;width:20px;height:20px;border-radius:50%;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
+              </sc-if>
+            </div>
+            <select value="{{ fLimit }}" onChange="{{ setFLimit }}" title="Строк на странице" style="background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px 9px 16px;font-size:12.5px;font-weight:600">
+              <option value="20">20 на странице</option>
+              <option value="50">50 на странице</option>
+              <option value="100">100 на странице</option>
+            </select>
+          </div>
+
+          <sc-if value="{{ hasChips }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+              <sc-for list="{{ chips }}" as="c" hint-placeholder-count="2">
+                <span style="display:inline-flex;align-items:center;gap:8px;background:#EBF8FA;border:1px solid #D5F0F3;color:#0E8E9E;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px">
+                  {{ c.label }}
+                  <button onClick="{{ c.remove }}" style="border:none;background:transparent;color:#0E8E9E;font-size:11px;padding:0">✕</button>
+                </span>
+              </sc-for>
+              <button onClick="{{ resetFilters }}" style="border:none;background:transparent;color:#5A6068;font-size:12px;font-weight:600;text-decoration:underline">Сбросить фильтры</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showError }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;background:#FDECEC;border:1px solid #F6C6C6;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+              <div style="font-size:13px;font-weight:600;color:#B3261E">Не удалось загрузить данные</div>
+              <button onClick="{{ retry }}" style="border:1px solid #B3261E;background:#fff;color:#B3261E;font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:8px">Повторить</button>
+            </div>
+          </sc-if>
+
+          <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) 140px 44px;gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099">
+              <div>Область применения</div>
+              <div>Правило</div>
+              <div>Ограничение</div>
+              <div>Субъект</div>
+              <div>Статус</div>
+              <div></div>
+            </div>
+
+            <sc-if value="{{ showSkeleton }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <sc-for list="{{ skeleton }}" as="s" hint-placeholder-count="5">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) 140px 44px;gap:16px;padding:18px;border-bottom:1px solid #F0F5F6;animation:sk 1.4s ease-in-out infinite">
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:20px;background:#EEF2F4;border-radius:999px"></div>
+                    <div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showRows }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+                  <div onClick="{{ r.open }}" style="{{ r.rowStyle }}">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                      <sc-for list="{{ r.scope }}" as="o" hint-placeholder-count="2">
+                        <div style="font-size:12.5px;line-height:1.4">
+                          <span style="font-weight:700">{{ o.type }}:</span>
+                          <span style="color:#3E464D"> {{ o.value }}</span>
+                        </div>
+                      </sc-for>
+                      <sc-if value="{{ r.hasMoreScope }}" hint-placeholder-val="{{ false }}">
+                        <div title="{{ r.scopeFull }}" style="font-size:11.5px;color:#0E8E9E;font-weight:700">{{ r.moreScope }}</div>
+                      </sc-if>
+                      <div style="font-size:10.5px;color:#9AA2A9;font-weight:700;letter-spacing:.4px">{{ r.andHint }}</div>
+                    </div>
+                    <div>
+                      <div style="font-size:13px;font-weight:600">{{ r.ruleName }}</div>
+                      <div style="font-size:11.5px;color:#8A9099;margin-top:2px">{{ r.condCount }}</div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start">
+                      <sc-for list="{{ r.badges }}" as="b" hint-placeholder-count="1">
+                        <span title="{{ b.title }}" style="{{ b.style }}">{{ b.label }}</span>
+                      </sc-for>
+                    </div>
+                    <div style="font-size:12.5px;color:#3E464D" title="{{ r.subjectsFull }}">{{ r.subjects }}</div>
+                    <div>
+                      <span title="{{ r.statusTitle }}" style="{{ r.statusStyle }}">{{ r.statusLabel }}</span>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;align-items:flex-start">
+                      <button onClick="{{ r.menu }}" title="Открыть карточку" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;width:28px;height:28px;border-radius:8px;font-size:13px;line-height:1">⋯</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEmptyAll }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:56px 24px;text-align:center">
+                <div style="width:56px;height:56px;border-radius:16px;background:#EBF8FA;border:1px solid #D5F0F3;margin:0 auto 14px"></div>
+                <div style="font-size:15px;font-weight:700">Пока нет ни одного ограничения</div>
+                <div style="font-size:12.5px;color:#6D757C;margin:6px 0 16px">Создайте первое ограничение — оно появится в этом списке.</div>
+                <button onClick="{{ openWizard }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px">Создать ограничение</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEmptyFiltered }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:56px 24px;text-align:center">
+                <div style="font-size:15px;font-weight:700">Ничего не найдено</div>
+                <div style="font-size:12.5px;color:#6D757C;margin:6px 0 16px">Попробуйте изменить условия поиска.</div>
+                <button onClick="{{ resetFilters }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:10px 16px;border-radius:9px">Сбросить фильтры</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showRows }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#FAFCFC;border-top:1px solid #E2EAEC">
+                <div style="font-size:12px;color:#6D757C">{{ pagerLabel }}</div>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span style="border:1px solid #E2EAEC;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#9AA2A9">◀</span>
+                  <span style="background:#1AB7C9;color:#fff;border-radius:8px;padding:5px 11px;font-size:12px;font-weight:700">1</span>
+                  <span style="border:1px solid #E2EAEC;background:#fff;border-radius:8px;padding:5px 11px;font-size:12px">2</span>
+                  <span style="border:1px solid #E2EAEC;background:#fff;border-radius:8px;padding:5px 11px;font-size:12px">3</span>
+                  <span style="border:1px solid #E2EAEC;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px">▶</span>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ================= КАРТОЧКА ОГРАНИЧЕНИЯ ================= -->
+      <sc-if value="{{ isCard }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1040px">
+          <button onClick="{{ goList }}" style="border:none;background:transparent;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:0;margin-bottom:12px">← Назад к списку</button>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <h1 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-.4px">{{ cardTitle }}</h1>
+                <button onClick="{{ copyId }}" title="Скопировать ID" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;border-radius:8px;font-size:11.5px;font-weight:600;padding:5px 9px">Копировать ID</button>
+                <span style="{{ cardStatusStyle }}">{{ cardStatusLabel }}</span>
+              </div>
+              <div style="font-size:12.5px;color:#6D757C;margin-top:5px">{{ cardSubtitle }}</div>
+            </div>
+            <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ toggleEdit }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:10px 16px;border-radius:10px">{{ editBtnLabel }}</button>
+                <button onClick="{{ askDelete }}" style="border:1px solid #E2C6C6;background:#fff;color:#B3261E;font-weight:700;font-size:13px;padding:10px 14px;border-radius:10px">Удалить</button>
+              </div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ cardOverview }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:18px">
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:10px">Область применения</div>
+                <sc-if value="{{ cardScopeReadOnly }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ cardScope }}" as="o" hint-placeholder-count="2">
+                      <div style="display:flex;align-items:center;gap:10px">
+                        <div style="border-left:3px solid #1AB7C9;padding-left:12px;flex:1">
+                          <div style="font-size:13px"><span style="font-weight:700">{{ o.type }}:</span> {{ o.value }}</div>
+                          <div style="font-size:11px;color:#9AA2A9">{{ o.uuid }}</div>
+                        </div>
+                        <span style="font-size:10.5px;font-weight:700;color:#9AA2A9;letter-spacing:.6px">{{ o.and }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ editMode }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:10px">
+                    <sc-for list="{{ cardScopeRows }}" as="o" hint-placeholder-count="2">
+                      <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
+                        <div style="display:grid;grid-template-columns:1fr 1.3fr 34px;gap:12px;align-items:start">
+                          <div>
+                            <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Объект</label>
+                            <select value="{{ o.type }}" onChange="{{ o.setType }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px 10px 14px;font-size:12.5px;background:#fff">
+                              <sc-for list="{{ objectTypeOpts }}" as="t" hint-placeholder-count="8">
+                                <option value="{{ t.value }}">{{ t.label }}</option>
+                              </sc-for>
+                            </select>
+                          </div>
+                          <div>
+                            <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">{{ o.searchLabel }}</label>
+                            <div style="position:relative">
+                              <input value="{{ o.value }}" onChange="{{ o.setValue }}" onFocus="{{ o.openSuggest }}" onBlur="{{ o.closeSuggest }}" disabled="{{ o.locked }}" placeholder="{{ o.placeholder }}" style="{{ o.inputStyle }}">
+                              <sc-if value="{{ o.suggestOpen }}" hint-placeholder-val="{{ false }}">
+                                <div style="position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #E2EAEC;border-radius:10px;box-shadow:0 8px 24px rgba(20,60,70,.14);overflow:hidden;max-height:210px;overflow-y:auto">
+                                  <sc-for list="{{ o.suggestions }}" as="s" hint-placeholder-count="4">
+                                    <div onMouseDown="{{ s.pick }}" style="padding:9px 12px;font-size:12.5px;cursor:pointer;border-bottom:1px solid #F0F5F6" style-hover="background:#EBF8FA">{{ s.label }}</div>
+                                  </sc-for>
+                                </div>
+                              </sc-if>
+                            </div>
+                            <sc-if value="{{ o.hasHint }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ o.hint }}</div>
+                            </sc-if>
+                          </div>
+                          <button onClick="{{ o.remove }}" title="Удалить объект" style="border:1px solid #E2EAEC;background:#fff;color:#B3261E;height:38px;margin-top:22px;border-radius:9px;font-size:12px">✕</button>
+                        </div>
+                        <sc-if value="{{ o.hasSelectExtra }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
+                            <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">{{ o.extraLabel }}</label>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px">
+                              <sc-for list="{{ o.extraOpts }}" as="e" hint-placeholder-count="3">
+                                <label style="{{ e.style }}">
+                                  <input type="checkbox" checked="{{ e.checked }}" onChange="{{ e.toggle }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                                  <span style="font-size:12.5px;font-weight:600">{{ e.label }}</span>
+                                </label>
+                              </sc-for>
+                            </div>
+                            <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.extraHint }}</div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ o.hasSpec }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
+                            <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">Специализация</label>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px">
+                              <sc-for list="{{ o.specOpts }}" as="s" hint-placeholder-count="2">
+                                <label style="{{ s.style }}">
+                                  <input type="radio" checked="{{ s.checked }}" onClick="{{ s.pick }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                                  <span style="font-size:12.5px;font-weight:600">{{ s.label }}</span>
+                                </label>
+                              </sc-for>
+                            </div>
+                            <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.specHint }}</div>
+                          </div>
+                        </sc-if>
+                        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;cursor:pointer">
+                          <input type="checkbox" checked="{{ o.all }}" onChange="{{ o.toggleAll }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                          {{ o.allLabel }}
+                        </label>
+                        <sc-if value="{{ o.hasError }}" hint-placeholder-val="{{ false }}">
+                          <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:8px">{{ o.error }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <button onClick="{{ addCardScopeRow }}" style="border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px">+ Добавить объект</button>
+                      <div style="font-size:12px;color:#6D757C">{{ cardScopeCounter }}</div>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+
+              <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:18px">
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:10px">Правило</div>
+                <div style="font-size:15px;font-weight:700">{{ cardRuleName }}</div>
+                <div style="font-size:12.5px;color:#6D757C;margin-top:3px">{{ cardRuleDesc }}</div>
+                <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ cardConditions }}" as="c" hint-placeholder-count="1">
+                    <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
+                      <span style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+                      <div style="font-size:13px;margin-top:10px"><span style="color:#8A9099">Текст для пользователя: </span>«{{ c.text }}»</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:18px">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:10px">Субъект</div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <sc-for list="{{ cardSubjects }}" as="s" hint-placeholder-count="2">
+                      <span style="background:#EEF2F4;border:1px solid #E2EAEC;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600">{{ s.label }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:18px">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:10px">Метаданные</div>
+                  <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px">
+                    <div><span style="color:#8A9099">Применить с: </span>{{ cardApplyFrom }}</div>
+                    <div><span style="color:#8A9099">Создано: </span>{{ cardCreated }}</div>
+                    <div><span style="color:#8A9099">Обновлено: </span>{{ cardUpdated }}</div>
+                    <div><span style="color:#8A9099">Описание: </span>{{ cardComment }}</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ editMode }}" hint-placeholder-val="{{ false }}">
+            <div style="position:sticky;bottom:0;margin-top:18px;background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 -4px 16px rgba(20,60,70,.08)">
+              <div style="font-size:12.5px;font-weight:600;color:#B26A00">Есть несохранённые изменения</div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ toggleEdit }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px">Отменить</button>
+                <button onClick="{{ saveCard }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:12.5px;padding:9px 18px;border-radius:9px">Сохранить</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ================= ПРАВИЛА ================= -->
+      <sc-if value="{{ isRules }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px">
+            <div>
+              <h1 style="margin:0;font-size:23px;font-weight:800;letter-spacing:-.4px">Правила</h1>
+              <div style="font-size:12.5px;color:#6D757C;margin-top:4px">Переиспользуемые наборы условий</div>
+            </div>
+            <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ newRule }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px">+ Создать правило</button>
+            </sc-if>
+          </div>
+          <label style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 13px;font-size:12.5px;font-weight:600;margin-bottom:14px;cursor:pointer">
+            <input type="checkbox" checked="{{ rulesShowDeleted }}" onChange="{{ toggleRulesDeleted }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+            Показывать удалённые правила
+          </label>
+          <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;overflow:hidden">
+            <div style="{{ rulesHeadStyle }}">
+              <div>Название</div><div>Описание</div><div>Условия</div><div>Срок действия</div><div>Обновлено</div>
+            </div>
+            <sc-if value="{{ rulesSkeleton }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <sc-for list="{{ skeleton }}" as="s" hint-placeholder-count="4">
+                  <div style="{{ rulesSkeletonRowStyle }}">
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:20px;background:#EEF2F4;border-radius:6px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ rulesShowRows }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+              <div onClick="{{ r.open }}" style="{{ r.rowStyle }}">
+                <div>
+                  <div style="font-size:13px;font-weight:700">{{ r.name }}</div>
+                  <sc-if value="{{ r.isDeleted }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:inline-flex;margin-top:4px;background:#F4F6F7;color:#6D757C;border:1px solid #DCE3E5;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700">Удалено</span>
+                  </sc-if>
+                </div>
+                <div style="font-size:12.5px;color:#6D757C;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.desc }}</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <sc-for list="{{ r.badges }}" as="b" hint-placeholder-count="1">
+                    <span style="{{ b.style }}">{{ b.label }}</span>
+                  </sc-for>
+                </div>
+                <div style="font-size:12px;color:#3E464D">{{ r.validity }}</div>
+                <div style="font-size:12px;color:#6D757C">{{ r.updated }}</div>
+              </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ rulesEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:52px 24px;text-align:center">
+                <div style="font-size:15px;font-weight:700">{{ rulesEmptyTitle }}</div>
+                <div style="font-size:12.5px;color:#6D757C;margin:6px 0 16px">{{ rulesEmptyText }}</div>
+                <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ newRule }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px">Создать правило</button>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ rulesError }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:44px 24px;text-align:center">
+                <div style="font-size:14px;font-weight:700;color:#B3261E">Не удалось загрузить правила</div>
+                <button onClick="{{ retry }}" style="margin-top:12px;border:1px solid #B3261E;background:#fff;color:#B3261E;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:8px">Повторить</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ================= РЕДАКТОР ПРАВИЛА ================= -->
+      <sc-if value="{{ isRuleEditor }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:900px">
+          <button onClick="{{ goRules }}" style="border:none;background:transparent;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:0;margin-bottom:12px">← Назад к правилам</button>
+          <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;letter-spacing:-.4px">{{ ruleEditorTitle }}</h1>
+          <sc-if value="{{ ruleReuseWarning }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#FFF7E6;border:1px solid #F5DFA8;border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:12.5px;color:#7A5200">
+              <div style="font-weight:700">⚠ Изменения заменяют правило целиком</div>
+              <div style="margin-top:5px;line-height:1.5">Правило может быть привязано к нескольким ограничениям — изменения затронут их все.</div>
+            </div>
+          </sc-if>
+          <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Название правила</label>
+              <input value="{{ reName }}" onChange="{{ setReName }}" placeholder="Например: Возрастное ограничение 18+" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:11px 13px;font-size:13px;background:#fff">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Описание</label>
+              <textarea value="{{ reDesc }}" onChange="{{ setReDesc }}" rows="2" placeholder="Кратко, для чего это правило" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:11px 13px;font-size:13px;resize:vertical"></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Действует с</label>
+                <input type="date" value="{{ reValidFrom }}" onChange="{{ setReValidFrom }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Действует по</label>
+                <input type="date" value="{{ reValidTo }}" onChange="{{ setReValidTo }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+                <div style="font-size:11px;color:#8A9099;margin-top:5px">Пусто — без ограничения по сроку</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#8A9099">Условия</div>
+              <div style="font-size:12px;color:#6D757C">{{ reCondCounter }}</div>
+            </div>
+            <sc-for list="{{ reConditions }}" as="c" hint-placeholder-count="1">
+              <div style="border:1px solid #E2EAEC;border-radius:12px;padding:16px;background:#FAFCFC;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <div style="font-size:12.5px;font-weight:700">{{ c.title }}</div>
+                  <button onClick="{{ c.remove }}" style="border:none;background:transparent;color:#B3261E;font-size:12px;font-weight:700">Удалить</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:12px">
+                  <div>
+                    <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Ограничение</label>
+                    <select value="{{ c.parameter }}" onChange="{{ c.setParameter }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                      <sc-for list="{{ paramOpts }}" as="p" hint-placeholder-count="4">
+                        <option value="{{ p.value }}">{{ p.label }}</option>
+                      </sc-for>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Оператор</label>
+                    <select value="{{ c.operator }}" onChange="{{ c.setOperator }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                      <sc-for list="{{ c.operatorOpts }}" as="o" hint-placeholder-count="3">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Значение</label>
+                    <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:8px">
+                        <input value="{{ c.value }}" onChange="{{ c.setValue }}" style="flex:1;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
+                        <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:92px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
+                          <sc-for list="{{ c.unitOpts }}" as="u" hint-placeholder-count="2">
+                            <option value="{{ u }}">{{ u }}</option>
+                          </sc-for>
+                        </select>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ c.isEnum }}" hint-placeholder-val="{{ false }}">
+                      <select value="{{ c.value }}" onChange="{{ c.setValue }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                        <sc-for list="{{ c.enumOpts }}" as="e" hint-placeholder-count="2">
+                          <option value="{{ e.value }}">{{ e.label }}</option>
+                        </sc-for>
+                      </select>
+                    </sc-if>
+                    <sc-if value="{{ c.isPregBool }}" hint-placeholder-val="{{ false }}">
+                      <div style="box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;color:#3E464D;background:#fff">{{ c.pregBoolValue }}</div>
+                      <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ c.pregBoolLabel }}</div>
+                    </sc-if>
+                    <sc-if value="{{ c.isWeeks }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <input value="{{ c.weekFrom }}" onChange="{{ c.setWeekFrom }}" placeholder="с" title="С какой недели" style="{{ c.weekFromStyle }}">
+                        <span style="font-size:12.5px;color:#8A9099">—</span>
+                        <input value="{{ c.weekTo }}" onChange="{{ c.setWeekTo }}" placeholder="по" title="По какую неделю" style="{{ c.weekToStyle }}">
+                        <span style="font-size:12.5px;color:#5A6068;white-space:nowrap">неделя беременности</span>
+                      </div>
+                      <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ c.weekHint }}</div>
+                    </sc-if>
+                    <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ false }}">
+                      <input value="{{ c.value }}" onChange="{{ c.setValue }}" placeholder="Значение" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
+                    </sc-if>
+                  </div>
+                </div>
+                <div>
+                  <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Текст ограничения</label>
+                  <textarea value="{{ c.text }}" onChange="{{ c.setText }}" rows="2" placeholder="Например: Услуга доступна с 18 лет" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:#8A9099;margin-top:4px">
+                    <span>Этот текст увидит пользователь</span>
+                    <span>{{ c.textCounter }}</span>
+                  </div>
+                </div>
+                <div style="background:#EBF8FA;border:1px solid #D5F0F3;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+                  <span style="font-size:12.5px;color:#0E5F6A">«{{ c.previewText }}»</span>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ reCondEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed #D6E2E4;border-radius:12px;padding:26px;text-align:center">
+                <div style="font-size:13px;font-weight:700">Ни одного условия</div>
+                <div style="font-size:12px;color:#8A9099;margin-top:5px">Правило без условий не сохранится — добавьте хотя бы одно.</div>
+              </div>
+            </sc-if>
+            <button onClick="{{ addReCondition }}" style="align-self:flex-start;border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px">+ Добавить условие</button>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:16px">
+            <sc-if value="{{ saveRuleBlocked }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:11.5px;color:#B3261E;font-weight:600;margin-right:auto">{{ saveRuleReason }}</span>
+            </sc-if>
+            <button onClick="{{ goRules }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:10px 18px;border-radius:9px">Отменить</button>
+            <button onClick="{{ saveRule }}" style="{{ saveRuleStyle }}">Сохранить</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ================= СПРАВОЧНИКИ ================= -->
+      <sc-if value="{{ isRef }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="margin-bottom:18px">
+            <h1 style="margin:0;font-size:23px;font-weight:800;letter-spacing:-.4px">{{ refTitle }}</h1>
+            <div style="font-size:12.5px;color:#6D757C;margin-top:4px">{{ refSubtitle }}</div>
+          </div>
+          <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;overflow:hidden">
+            <div style="{{ refHeadStyle }}">
+              <sc-for list="{{ refColumns }}" as="c" hint-placeholder-count="4">
+                <div>{{ c }}</div>
+              </sc-for>
+            </div>
+            <sc-for list="{{ refRows }}" as="r" hint-placeholder-count="6">
+              <div style="{{ refRowStyle }}">
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4">
+                  <div style="{{ c.style }}">{{ c.text }}</div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:11.5px;color:#8A9099;margin-top:12px">{{ refFooter }}</div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= ВИЗАРД ================= -->
+  <sc-if value="{{ wizardOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(16,32,36,.5);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto">
+      <div style="width:760px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(20,60,70,.24);animation:fadeIn .16s ease-out;display:flex;flex-direction:column;max-height:86vh">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 12px;border-bottom:1px solid #E2EAEC">
+          <div>
+            <div style="font-size:17px;font-weight:800">Создать ограничение</div>
+            <div style="font-size:12px;color:#6D757C;margin-top:2px">{{ stepTitle }}</div>
+          </div>
+          <button onClick="{{ askCloseWizard }}" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;width:30px;height:30px;border-radius:8px">✕</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;padding:14px 22px;border-bottom:1px solid #F0F5F6">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+            <div onClick="{{ s.go }}" style="{{ s.wrapStyle }}">
+              <span style="{{ s.circleStyle }}">{{ s.mark }}</span>
+              <span style="{{ s.labelStyle }}">{{ s.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding:20px 22px;overflow:auto;flex:1">
+
+          <!-- ШАГ 1 -->
+          <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ scopeRows }}" as="o" hint-placeholder-count="2">
+                <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
+                  <div style="display:grid;grid-template-columns:1fr 1.3fr 34px;gap:12px;align-items:start">
+                    <div>
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Объект</label>
+                      <select value="{{ o.type }}" onChange="{{ o.setType }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px 10px 14px;font-size:12.5px;background:#fff">
+                        <sc-for list="{{ objectTypeOpts }}" as="t" hint-placeholder-count="8">
+                          <option value="{{ t.value }}">{{ t.label }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">{{ o.searchLabel }}</label>
+                      <div style="position:relative">
+                        <input value="{{ o.value }}" onChange="{{ o.setValue }}" onFocus="{{ o.openSuggest }}" onBlur="{{ o.closeSuggest }}" disabled="{{ o.locked }}" placeholder="{{ o.placeholder }}" style="{{ o.inputStyle }}">
+                        <sc-if value="{{ o.suggestOpen }}" hint-placeholder-val="{{ false }}">
+                          <div style="position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #E2EAEC;border-radius:10px;box-shadow:0 8px 24px rgba(20,60,70,.14);overflow:hidden;max-height:210px;overflow-y:auto">
+                            <sc-for list="{{ o.suggestions }}" as="s" hint-placeholder-count="4">
+                              <div onMouseDown="{{ s.pick }}" style="padding:9px 12px;font-size:12.5px;cursor:pointer;border-bottom:1px solid #F0F5F6" style-hover="background:#EBF8FA">{{ s.label }}</div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                      </div>
+                      <sc-if value="{{ o.hasHint }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ o.hint }}</div>
+                      </sc-if>
+                    </div>
+                    <button onClick="{{ o.remove }}" title="Удалить объект" style="border:1px solid #E2EAEC;background:#fff;color:#B3261E;height:38px;margin-top:22px;border-radius:9px;font-size:12px">✕</button>
+                  </div>
+                  <sc-if value="{{ o.hasSelectExtra }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">{{ o.extraLabel }}</label>
+                      <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <sc-for list="{{ o.extraOpts }}" as="e" hint-placeholder-count="3">
+                          <label style="{{ e.style }}">
+                            <input type="checkbox" checked="{{ e.checked }}" onChange="{{ e.toggle }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                            <span style="font-size:12.5px;font-weight:600">{{ e.label }}</span>
+                          </label>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.extraHint }}</div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ o.hasSpec }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">Специализация</label>
+                      <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <sc-for list="{{ o.specOpts }}" as="s" hint-placeholder-count="2">
+                          <label style="{{ s.style }}">
+                            <input type="radio" checked="{{ s.checked }}" onClick="{{ s.pick }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                            <span style="font-size:12.5px;font-weight:600">{{ s.label }}</span>
+                          </label>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.specHint }}</div>
+                    </div>
+                  </sc-if>
+                  <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;cursor:pointer">
+                    <input type="checkbox" checked="{{ o.all }}" onChange="{{ o.toggleAll }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                    {{ o.allLabel }}
+                  </label>
+                  <sc-if value="{{ o.hasError }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:8px">{{ o.error }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <button onClick="{{ addScopeRow }}" style="border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px">+ Добавить объект</button>
+                <div style="{{ scopeCounterStyle }}">{{ scopeCounter }}</div>
+              </div>
+              <div style="border-top:1px solid #F0F5F6;padding-top:14px">
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:8px">Область применения</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                  <sc-for list="{{ scopeChips }}" as="c" hint-placeholder-count="2">
+                    <span style="display:inline-flex;align-items:center;gap:8px">
+                      <span style="background:#EBF8FA;border:1px solid #D5F0F3;color:#0E5F6A;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px">{{ c.label }}</span>
+                      <span style="font-size:10.5px;font-weight:800;color:#9AA2A9;letter-spacing:.6px">{{ c.and }}</span>
+                    </span>
+                  </sc-for>
+                  <sc-if value="{{ scopeEmpty }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:12.5px;color:#B3261E;font-weight:600">Добавьте хотя бы один объект</span>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ШАГ 2 -->
+          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:inline-flex;background:#EEF2F4;border-radius:10px;padding:3px;align-self:flex-start">
+                <button onClick="{{ modeExisting }}" style="{{ modeExistingStyle }}">Выбрать существующее</button>
+                <button onClick="{{ modeNew }}" style="{{ modeNewStyle }}">Создать новое</button>
+              </div>
+
+              <sc-if value="{{ modeIsExisting }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <input value="{{ ruleQuery }}" onChange="{{ setRuleQuery }}" placeholder="Поиск по названию правила" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:11px 13px;font-size:12.5px;margin-bottom:12px">
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ ruleOptions }}" as="r" hint-placeholder-count="3">
+                      <div onClick="{{ r.select }}" style="{{ r.style }}">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                          <div style="font-size:13px;font-weight:700">{{ r.name }}</div>
+                          <div style="font-size:11.5px;color:#8A9099">{{ r.validity }}</div>
+                        </div>
+                        <div style="font-size:12px;color:#6D757C;margin:3px 0 8px">{{ r.desc }}</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-for list="{{ r.badges }}" as="b" hint-placeholder-count="1">
+                            <span style="{{ b.style }}">{{ b.label }}</span>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{ noRuleResults }}" hint-placeholder-val="{{ false }}">
+                      <div style="border:1px dashed #D6E2E4;border-radius:12px;padding:22px;text-align:center">
+                        <div style="font-size:13px;font-weight:700">Правило не найдено</div>
+                        <button onClick="{{ createFromQuery }}" style="margin-top:10px;border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px">Создать новое правило</button>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <sc-if value="{{ hasSelectedRule }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:14px;background:#FAFCFC;border:1px solid #E2EAEC;border-radius:12px;padding:14px">
+                      <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:10px">Что увидит пользователь</div>
+                      <sc-for list="{{ selectedRuleConditions }}" as="c" hint-placeholder-count="1">
+                        <div style="padding:8px 0;border-top:1px solid #F0F5F6">
+                          <span style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+                          <div style="font-size:12.5px;margin-top:6px">«{{ c.text }}»</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ modeIsNew }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div>
+                    <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Название правила</label>
+                    <input value="{{ reName }}" onChange="{{ setReName }}" placeholder="Например: Возрастное ограничение 18+" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:11px 13px;font-size:12.5px">
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Описание</label>
+                    <textarea value="{{ reDesc }}" onChange="{{ setReDesc }}" rows="2" placeholder="Необязательно" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div>
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Действует с</label>
+                      <input type="date" value="{{ reValidFrom }}" onChange="{{ setReValidFrom }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Действует по</label>
+                      <input type="date" value="{{ reValidTo }}" onChange="{{ setReValidTo }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+                      <div style="font-size:11px;color:#8A9099;margin-top:5px">Пусто — без ограничения по сроку</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between">
+                    <div style="font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#8A9099">Условия</div>
+                    <div style="font-size:12px;color:#6D757C">{{ reCondCounter }}</div>
+                  </div>
+                  <sc-for list="{{ reConditions }}" as="c" hint-placeholder-count="1">
+                    <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC;display:flex;flex-direction:column;gap:10px">
+                      <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="font-size:12.5px;font-weight:700">{{ c.title }}</div>
+                        <button onClick="{{ c.remove }}" style="border:none;background:transparent;color:#B3261E;font-size:12px;font-weight:700">Удалить</button>
+                      </div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:10px;align-items:start">
+                        <div>
+                          <label style="display:block;font-size:11px;font-weight:700;margin-bottom:5px;color:#5A6068">Ограничение</label>
+                          <select value="{{ c.parameter }}" onChange="{{ c.setParameter }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                            <sc-for list="{{ paramOpts }}" as="p" hint-placeholder-count="4">
+                              <option value="{{ p.value }}">{{ p.label }}</option>
+                            </sc-for>
+                          </select>
+                        </div>
+                        <div>
+                          <label style="display:block;font-size:11px;font-weight:700;margin-bottom:5px;color:#5A6068">Оператор</label>
+                          <select value="{{ c.operator }}" onChange="{{ c.setOperator }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                            <sc-for list="{{ c.operatorOpts }}" as="o" hint-placeholder-count="3">
+                              <option value="{{ o.value }}">{{ o.label }}</option>
+                            </sc-for>
+                          </select>
+                        </div>
+                        <div>
+                          <label style="display:block;font-size:11px;font-weight:700;margin-bottom:5px;color:#5A6068">Значение</label>
+                          <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;gap:8px">
+                              <input value="{{ c.value }}" onChange="{{ c.setValue }}" style="flex:1;min-width:0;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
+                              <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:88px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
+                                <sc-for list="{{ c.unitOpts }}" as="u" hint-placeholder-count="2">
+                                  <option value="{{ u }}">{{ u }}</option>
+                                </sc-for>
+                              </select>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ c.isEnum }}" hint-placeholder-val="{{ false }}">
+                            <select value="{{ c.value }}" onChange="{{ c.setValue }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px;background:#fff">
+                              <sc-for list="{{ c.enumOpts }}" as="e" hint-placeholder-count="2">
+                                <option value="{{ e.value }}">{{ e.label }}</option>
+                              </sc-for>
+                            </select>
+                          </sc-if>
+                          <sc-if value="{{ c.isPregBool }}" hint-placeholder-val="{{ false }}">
+                            <div style="box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;color:#3E464D;background:#fff">{{ c.pregBoolValue }}</div>
+                            <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ c.pregBoolLabel }}</div>
+                          </sc-if>
+                          <sc-if value="{{ c.isWeeks }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:8px">
+                              <input value="{{ c.weekFrom }}" onChange="{{ c.setWeekFrom }}" placeholder="с" title="С какой недели" style="{{ c.weekFromStyle }}">
+                              <span style="font-size:12.5px;color:#8A9099">—</span>
+                              <input value="{{ c.weekTo }}" onChange="{{ c.setWeekTo }}" placeholder="по" title="По какую неделю" style="{{ c.weekToStyle }}">
+                              <span style="font-size:12px;color:#5A6068;white-space:nowrap">нед.</span>
+                            </div>
+                            <div style="font-size:11px;color:#8A9099;margin-top:5px">{{ c.weekHint }}</div>
+                          </sc-if>
+                          <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ false }}">
+                            <input value="{{ c.value }}" onChange="{{ c.setValue }}" placeholder="Значение" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
+                          </sc-if>
+                        </div>
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:11px;font-weight:700;margin-bottom:5px;color:#5A6068">Текст ограничения</label>
+                        <textarea value="{{ c.text }}" onChange="{{ c.setText }}" rows="2" placeholder="Например: Услуга доступна с 18 лет" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:#8A9099;margin-top:4px">
+                          <span>Этот текст увидит пользователь</span>
+                          <span>{{ c.textCounter }}</span>
+                        </div>
+                      </div>
+                      <div style="background:#EBF8FA;border:1px solid #D5F0F3;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <span style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+                        <span style="font-size:12px;color:#0E5F6A">«{{ c.previewText }}»</span>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ reCondEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div style="border:1px dashed #D6E2E4;border-radius:12px;padding:22px;text-align:center">
+                      <div style="font-size:12.5px;font-weight:700">Ни одного условия</div>
+                      <div style="font-size:11.5px;color:#8A9099;margin-top:5px">Добавьте хотя бы одно условие, чтобы продолжить.</div>
+                    </div>
+                  </sc-if>
+                  <button onClick="{{ addReCondition }}" style="align-self:flex-start;border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:9px 14px;border-radius:9px">+ Добавить условие</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <!-- ШАГ 3 -->
+          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <div style="font-size:12px;font-weight:700">Субъект</div>
+                  <button onClick="{{ selectAllSubjects }}" style="border:none;background:transparent;color:#0E8E9E;font-weight:700;font-size:12px">Выбрать все</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <sc-for list="{{ subjectOpts }}" as="s" hint-placeholder-count="4">
+                    <label style="{{ s.style }}" title="{{ s.hint }}">
+                      <input type="checkbox" checked="{{ s.checked }}" onChange="{{ s.toggle }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+                      <span style="font-size:12.5px;font-weight:600">{{ s.label }}</span>
+                    </label>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ subjectsError }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:8px">Выберите хотя бы одного получателя</div>
+                </sc-if>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Применить с</label>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <input type="date" value="{{ applyFrom }}" onChange="{{ setApplyFrom }}" style="border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+                  <span style="{{ applyFromBadgeStyle }}">{{ applyFromLabel }}</span>
+                  <sc-if value="{{ hasApplyFrom }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ clearApplyFrom }}" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;border-radius:8px;font-size:11.5px;font-weight:600;padding:7px 10px">Сбросить</button>
+                  </sc-if>
+                </div>
+                <div style="font-size:11.5px;color:#8A9099;margin-top:6px">Оставьте «немедленно», чтобы ограничение начало действовать сразу.</div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Описание ограничения</label>
+                <textarea value="{{ comment }}" onChange="{{ setComment }}" rows="3" placeholder="Для чего создано это ограничение" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
+                <div style="font-size:11.5px;color:#8A9099;margin-top:5px">Видно в карточке ограничения — коротко, зачем оно создано.</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ШАГ 4 -->
+          <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ summary }}" as="s" hint-placeholder-count="5">
+                <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099">{{ s.label }}</div>
+                    <button onClick="{{ s.edit }}" style="border:none;background:transparent;color:#0E8E9E;font-weight:700;font-size:12px">Изменить</button>
+                  </div>
+                  <sc-for list="{{ s.lines }}" as="l" hint-placeholder-count="2">
+                    <div style="font-size:12.5px;line-height:1.6">{{ l }}</div>
+                  </sc-for>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;gap:10px;background:#EEF2F4;border:1px dashed #CBD6D9;border-radius:10px;padding:10px 12px">
+                <span style="font-size:11.5px;font-weight:700;color:#5A6068">Демо: результат проверки</span>
+                <select value="{{ demoResponse }}" onChange="{{ setDemoResponse }}" style="border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:8px;padding:8px 10px;font-size:12px;background:#fff">
+                  <option value="201">Успешно создано</option>
+                  <option value="DUPLICATE">Дубликат</option>
+                  <option value="MORE_SPECIFIC_EXISTS">Есть более специфичное</option>
+                  <option value="OVERLAPPING">Пересечение областей</option>
+                </select>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px;border-top:1px solid #E2EAEC;background:#FAFCFC;border-radius:0 0 16px 16px">
+          <button onClick="{{ prevStep }}" style="{{ prevStyle }}">← Назад</button>
+          <div style="display:flex;align-items:center;gap:12px">
+            <sc-if value="{{ nextBlocked }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:11.5px;color:#B3261E;font-weight:600">{{ nextBlockedReason }}</span>
+            </sc-if>
+            <button onClick="{{ nextStep }}" style="{{ nextStyle }}">{{ nextLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ================= МОДАЛКА КОНФЛИКТА ================= -->
+  <sc-if value="{{ conflictOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(16,32,36,.55);z-index:70;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="width:620px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(20,60,70,.28);animation:fadeIn .16s ease-out;overflow:hidden">
+        <div style="padding:20px 22px 0">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:34px;height:34px;border-radius:10px;background:#FFF7E6;border:1px solid #F5DFA8;display:flex;align-items:center;justify-content:center;color:#B26A00;font-size:16px">⚠</div>
+            <div>
+              <div style="font-size:17px;font-weight:800">{{ conflictTitle }}</div>
+              <div style="font-size:12.5px;color:#5A6068;margin-top:6px;line-height:1.55">{{ conflictBody }}</div>
+            </div>
+          </div>
+          <div style="background:#FFF7E6;border:1px solid #F5DFA8;border-radius:12px;padding:14px;margin:16px 0 0">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#7A5200;margin-bottom:8px">Существующее ограничение</div>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#5C4200">
+              <div><span style="color:#8A7A55">Ограничение: </span>{{ conflictRestrictionId }}</div>
+              <div><span style="color:#8A7A55">Правило: </span>{{ conflictRuleId }}</div>
+              <div><span style="color:#8A7A55">Ограничение по: </span>{{ conflictParameter }}</div>
+              <div><span style="color:#8A7A55">Область применения: </span>{{ conflictScope }}</div>
+              <div><span style="color:#8A7A55">Значение: </span>{{ conflictValue }}</div>
+            </div>
+          </div>
+          <sc-if value="{{ conflictCompare }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+              <div style="border:1px solid #E2EAEC;border-radius:10px;padding:12px">
+                <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8A9099;margin-bottom:6px">Ваше</div>
+                <div style="font-size:12.5px">МО = Москва-1 И Продукт = Все</div>
+              </div>
+              <div style="border:1px solid #F5DFA8;background:#FFFDF7;border-radius:10px;padding:12px">
+                <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8A7A55;margin-bottom:6px">Существующее (уже, приоритет)</div>
+                <div style="font-size:12.5px">МО = Москва-1 И Продукт = Холтер ЭКГ</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ conflictForce }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid #F5DFA8;border-radius:10px;background:#FFFDF7;cursor:pointer">
+              <input type="checkbox" checked="{{ forceAck }}" onChange="{{ toggleForceAck }}" style="width:16px;height:16px;accent-color:#F39200">
+              <span style="font-size:12.5px;color:#5C4200">Понимаю, что в зоне пересечения пользователю будут показаны оба ограничения</span>
+            </label>
+          </sc-if>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;padding:18px 22px;margin-top:18px;background:#FAFCFC;border-top:1px solid #E2EAEC">
+          <button onClick="{{ backToEditing }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:10px 16px;border-radius:9px">Вернуться к редактированию</button>
+          <sc-if value="{{ conflictForce }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ forceCreate }}" style="{{ forceBtnStyle }}">Создать принудительно</button>
+          </sc-if>
+          <sc-if value="{{ conflictOpenExisting }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ openExisting }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:12.5px;padding:10px 18px;border-radius:9px">Открыть существующее</button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ================= ПОДТВЕРЖДЕНИЯ ================= -->
+  <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(16,32,36,.5);z-index:80;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="width:460px;max-width:100%;background:#fff;border-radius:16px;padding:22px;box-shadow:0 24px 64px rgba(20,60,70,.28);animation:fadeIn .16s ease-out">
+        <div style="font-size:16px;font-weight:800">{{ confirmTitle }}</div>
+        <div style="font-size:12.5px;color:#5A6068;margin-top:8px;line-height:1.55">{{ confirmBody }}</div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button onClick="{{ confirmCancel }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:10px 16px;border-radius:9px">{{ confirmCancelLabel }}</button>
+          <button onClick="{{ confirmOk }}" style="{{ confirmOkStyle }}">{{ confirmOkLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ================= ТОСТЫ ================= -->
+  <div style="position:fixed;top:70px;right:20px;z-index:90;display:flex;flex-direction:column;gap:8px">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="{{ t.style }}">
+        <span style="font-size:12.5px;font-weight:600">{{ t.text }}</span>
+        <button onClick="{{ t.close }}" style="border:none;background:transparent;color:inherit;font-size:12px;opacity:.7">✕</button>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emptyAll&quot;,&quot;emptyFiltered&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'error'|'emptyAll'|'emptyFiltered'&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;readOnly&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Состояния&quot;}}">
+class Component extends DCLogic {
+  OT = {
+    MED_OFFICE: ['Медицинский офис', 'МО', 'Все медофисы'],
+    CABINET: ['Кабинет', 'Кабинет', 'Все кабинеты'],
+    DOCTOR: ['Врач', 'Врач', 'Все врачи'],
+    DOCTOR_SPECIALITY: ['Специальность врача', 'Спец.', 'Все специальности'],
+    PRODUCT: ['Продукт', 'Продукт', 'Все продукты'],
+    AGGLOMERATION: ['Агломерация', 'Агломерация', 'Все агломерации'],
+    COUNTRY: ['Страна', 'Страна', 'Все страны'],
+    CITY: ['Город', 'Город', 'Все города']
+  };
+  PLURALS = {
+    restriction: ['ограничение', 'ограничения', 'ограничений'],
+    condition: ['условие', 'условия', 'условий'],
+    object: ['объект', 'объекта', 'объектов'],
+    'год': ['год', 'года', 'лет'],
+    'месяц': ['месяц', 'месяца', 'месяцев']
+  };
+  unitLabel(value, unit) {
+    if (!unit || unit === '—') return '';
+    if (!this.PLURALS[unit]) return unit;
+    const n = parseInt(String(value).replace(/[^0-9]/g, ''), 10);
+    return isNaN(n) ? this.PLURALS[unit][0] : this.plural(n, unit);
+  }
+  plural(n, key) {
+    const f = this.PLURALS[key];
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return f[0];
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return f[1];
+    return f[2];
+  }
+  plur(n, key) { return n + ' ' + this.plural(n, key); }
+  SUBJ = { PATIENT: 'Пациент', OPERATOR_CC: 'Оператор КЦ', DOCTOR: 'Врач', ADMIN_ARMPS: 'Админ АРМПС' };
+  SUBJ_HINT = {
+    PATIENT: 'Пациент — увидит текст на карточке услуги и в форме записи',
+    OPERATOR_CC: 'Оператор КЦ — увидит текст при оформлении записи по телефону',
+    DOCTOR: 'Врач — увидит текст в своём расписании',
+    ADMIN_ARMPS: 'Админ АРМПС — увидит текст в административном рабочем месте'
+  };
+  PARAMS = { AGE: 'Возраст', GENDER: 'Пол', PREGNANCY: 'Беременность', WEIGHT: 'Вес' };
+  OPS = [['eq', '=', 'равно'], ['ne', '≠', 'не равно'], ['gt', '>', 'больше'], ['gte', '≥', 'больше или равно'], ['lt', '<', 'меньше'], ['lte', '≤', 'меньше или равно'], ['between', 'с — по', 'в диапазоне']];
+
+  OWNERSHIP = ['СМО', 'ФМО-ЛФР', 'ФМО-МФР'];
+  CABINET_KINDS = ['Фактический', 'Виртуальный'];
+  REGIONS = ['РФ', 'КЗ', 'РБ', 'Киргизия', 'Дальний восток', 'Сибирь', 'Урал', 'Центр', 'Северо-Запад', 'Северо-Кавказ', 'Юг', 'Крым', 'Приволжье', 'Москва'];
+  SEARCH_LABEL = {
+    MED_OFFICE: 'Код или название медофиса',
+    DOCTOR: 'ФИО врача',
+    PRODUCT: 'Название или артикул продукта',    CABINET: 'Название или номер кабинета',
+    DOCTOR_SPECIALITY: 'Название специальности',
+    AGGLOMERATION: 'Название агломерации',
+    COUNTRY: 'Название страны',
+    CITY: 'Название города'
+  };
+  SEARCH_PLACEHOLDER = {
+    MED_OFFICE: 'Например: MSK-001 или Москва-1',
+    DOCTOR: 'Например: Иванов И.И.',
+    PRODUCT: 'Например: 21.1.1 или Общий анализ крови',
+    CABINET: 'Например: Каб. 3',
+    DOCTOR_SPECIALITY: 'Например: Гинеколог',
+    AGGLOMERATION: 'Например: Москва и МО',
+    COUNTRY: 'Например: Россия',
+    CITY: 'Например: Санкт-Петербург'
+  };
+
+  CARD_EXTRA = { MED_OFFICE: 'СМО', CABINET: 'Фактический', DOCTOR: '', PRODUCT: '' };
+  newScopeRow(type) {
+    const t = type || 'PRODUCT';
+    return { id: Date.now() + Math.floor(Math.random() * 1000), type: t, value: '', all: false, account: '', extra: this.defaultExtra(t), region: this.defaultRegion(t) };
+  }
+  defaultExtra(t) { return t === 'MED_OFFICE' || t === 'CABINET' ? [] : []; }
+  defaultRegion(t) { return t === 'PRODUCT' ? this.REGIONS[0] : ''; }
+  SUGGEST = {
+    MED_OFFICE: ['MSK-001 — Москва-1, ул. Ленинская 12', 'MSK-014 — Москва-14, Кутузовский пр-т 5', 'SPB-004 — Санкт-Петербург-4', 'SPB-021 — Санкт-Петербург-21', 'EKB-002 — Екатеринбург-2', 'KZN-007 — Казань-7'],
+    CABINET: ['Каб. 3 — процедурный', 'Каб. 5 — УЗИ', 'Каб. 12 — Функциональная диагностика', 'Каб. 14 — Забор крови', 'Телемедицина — виртуальный кабинет'],
+    DOCTOR: ['Иванов И.И. — i.ivanov', 'Петрова А.С. — a.petrova', 'Сидоров М.В. — m.sidorov', 'Кузнецова О.Н. — o.kuznetsova', 'Смирнов Д.А. — d.smirnov'],
+    DOCTOR_SPECIALITY: ['Гинеколог', 'Терапевт', 'Кардиолог', 'Эндокринолог', 'Уролог', 'Педиатр', 'Врач УЗИ'],
+    PRODUCT: ['21.1.1 — Общий анализ крови', '08.1.2 — Витамин D, 25-OH', '04.2.7 — Гормоны щитовидной железы', '55.0.3 — Холтер ЭКГ, 24 часа', '90.1.4 — Генетические тесты', '12.3.1 — УЗИ брюшной полости'],
+    AGGLOMERATION: ['Москва и МО', 'Санкт-Петербург и ЛО', 'Екатеринбург', 'Новосибирск', 'Казань', 'Ростов-на-Дону'],
+    COUNTRY: ['Россия', 'Казахстан', 'Беларусь', 'Киргизия', 'Армения'],
+    CITY: ['Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Казань', 'Нижний Новгород', 'Сочи']
+  };
+  DOCTOR_SPECS = {
+    'Иванов И.И. — i.ivanov': ['Терапевт', 'Кардиолог'],
+    'Петрова А.С. — a.petrova': ['Гинеколог', 'Врач УЗИ'],
+    'Сидоров М.В. — m.sidorov': ['Уролог'],
+    'Кузнецова О.Н. — o.kuznetsova': ['Эндокринолог', 'Терапевт', 'Врач УЗИ'],
+    'Смирнов Д.А. — d.smirnov': ['Педиатр', 'Терапевт']
+  };
+  docSpecsFor(value) {
+    const v = (value || '').trim();
+    if (!v) return [];
+    if (this.DOCTOR_SPECS[v]) return this.DOCTOR_SPECS[v];
+    const key = Object.keys(this.DOCTOR_SPECS).find(k => k.toLowerCase().indexOf(v.toLowerCase()) >= 0);
+    return key ? this.DOCTOR_SPECS[key] : ['Терапевт'];
+  }
+  scopeLocked(o) {
+    return !!o.all;
+  }
+  extraList(o) { return Array.isArray(o.extra) ? o.extra : (o.extra ? [o.extra] : []); }
+  scopeExtras(o) {
+    const out = [];
+    if (!o.all) {
+      const sel = this.extraList(o);
+      if (sel.length) out.push(sel.join(', '));
+      if (o.type === 'DOCTOR' && (o.spec || '').trim()) out.push((o.spec || '').trim());
+    }
+    return out;
+  }
+  scopeFullLabel(o) {
+    const base = this.OT[o.type][1] + ': ' + (this.scopeLocked(o) ? 'Все' : (o.value || '—'));
+    const ex = this.scopeExtras(o);
+    return ex.length ? base + ' · ' + ex.join(' · ') : base;
+  }
+  scopeRowVM(o, i, rows, patch, drop, ns) {
+    const key = (ns || 'wiz') + ':' + o.id;
+    const locked = this.scopeLocked(o);
+    const dup = rows.some((x, j) => j < i && x.type === o.type && ((this.scopeLocked(x) && locked) || (!this.scopeLocked(x) && !locked && x.value.trim() === o.value.trim() && o.value.trim())));
+    const err = dup ? 'Такой объект уже добавлен' : (!locked && !o.value.trim() ? 'Укажите объект или отметьте «Все»' : '');
+    const field = (bad, dis) => 'width:100%;border:none;box-shadow:inset 0 0 0 1px ' + (bad ? '#DB0000' : '#DCE6E8') + ';border-radius:9px;padding:10px 11px;font-size:12.5px;background:' + (dis ? '#F4F6F7' : '#fff') + ';color:' + (dis ? '#9AA2A9' : '#1A1A1A');
+    const sel = dis => 'width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px 10px 14px;font-size:12.5px;background:' + (dis ? '#F4F6F7' : '#fff') + ';color:' + (dis ? '#9AA2A9' : '#1A1A1A');
+    const hasAccount = o.type === 'DOCTOR';
+    const hasOwner = o.type === 'MED_OFFICE';
+    const hasCabKind = o.type === 'CABINET';
+    const hasRegion = o.type === 'PRODUCT';
+    return {
+      type: o.type, value: locked ? '' : o.value, all: o.all, locked,
+      account: locked ? '' : (o.account || ''), extra: this.extraList(o), region: o.region || '',
+      searchLabel: this.SEARCH_LABEL[o.type] || 'Объект',
+      hint: o.type === 'DOCTOR' ? 'Врача можно найти по ФИО или по учётной записи' : '',
+      hasHint: o.type === 'DOCTOR',
+      allLabel: this.OT[o.type][2] + ' — без выбора конкретного',
+      placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…'),
+      inputStyle: field(!!err, locked),
+      accountStyle: field(false, locked), extraStyle: sel(o.all), regionStyle: sel(o.all),
+      hasAccount: o.type === 'DOCTOR', hasRegion: false,
+      hasSelectExtra: hasOwner || hasCabKind || hasRegion,
+      hasExtra: hasAccount || hasOwner || hasCabKind || hasRegion,
+      hasSpec: o.type === 'DOCTOR' && !locked && !!(o.value || '').trim(),
+      extraLabel: hasOwner ? 'Форма собственности' : hasRegion ? 'Страна присутствия и агломерация' : 'Тип кабинета',
+      extraHint: (() => {
+        const sel2 = this.extraList(o);
+        if (!sel2.length) return hasOwner ? 'Не отмечено — любая форма собственности' : hasRegion ? 'Не отмечено — все страны и агломерации' : 'Не отмечено — любой тип кабинета';
+        return 'Отмечено: ' + sel2.join(', ');
+      })(),
+      extraOpts: (hasOwner ? this.OWNERSHIP : hasCabKind ? this.CABINET_KINDS : hasRegion ? this.REGIONS : []).map(v => {
+        const on = this.extraList(o).indexOf(v) >= 0;
+        return {
+          value: v, label: v, checked: on,
+          style: 'display:inline-flex;align-items:center;gap:8px;border:1px solid ' + (on ? '#1AB7C9' : '#DCE6E8') + ';background:' + (on ? '#EBF8FA' : '#fff') + ';border-radius:6px;padding:9px 12px;cursor:pointer;color:#1A1A1A',
+          toggle: () => {
+            const cur = this.extraList(o);
+            patch(o.id, { extra: on ? cur.filter(x => x !== v) : cur.concat([v]) });
+          }
+        };
+      }),
+      specHint: (o.spec || '').trim() ? 'Ограничение применится только к приёмам по этой специализации' : 'Не выбрано — ограничение применится ко всем специализациям врача',
+      specOpts: this.docSpecsFor(o.value).map(v => {
+        const on = (o.spec || '') === v;
+        return {
+          value: v, label: v, checked: on,
+          style: 'display:inline-flex;align-items:center;gap:8px;border:1px solid ' + (on ? '#1AB7C9' : '#DCE6E8') + ';background:' + (on ? '#EBF8FA' : '#fff') + ';border-radius:6px;padding:9px 12px;cursor:pointer',
+          pick: () => patch(o.id, { spec: on ? '' : v })
+        };
+      }),
+      hasError: !!err, error: err,
+      suggestOpen: this.state.suggestOpen === key && !locked,
+      suggestions: (() => {
+        if (locked || this.state.suggestOpen !== key) return [];
+        const all = this.SUGGEST[o.type] || [];
+        const q = (o.value || '').trim().toLowerCase();
+        return all.filter(s => !q || s.toLowerCase().indexOf(q) >= 0).slice(0, 6).map(s => ({
+          label: s,
+          pick: () => { patch(o.id, { value: s, spec: '' }); this.setState({ suggestOpen: null }); }
+        }));
+      })(),
+      openSuggest: () => this.setState({ suggestOpen: key }),
+      closeSuggest: () => setTimeout(() => this.setState(st2 => st2.suggestOpen === key ? { suggestOpen: null } : {}), 160),
+      setType: e => patch(o.id, { type: e.target.value, account: '', spec: '', extra: this.defaultExtra(e.target.value), region: this.defaultRegion(e.target.value) }),
+      setValue: e => { patch(o.id, { value: e.target.value, spec: '' }); this.setState({ suggestOpen: key }); },
+      setAccount: e => patch(o.id, { account: e.target.value }),
+      setExtra: e => patch(o.id, { extra: e.target.value }),
+      setRegion: e => patch(o.id, { region: e.target.value }),
+      toggleAll: () => patch(o.id, { all: !o.all, value: !o.all ? '' : o.value }),
+      remove: () => drop(o.id)
+    };
+  }
+
+  state = {
+    route: 'list', query: '', fType: 'all', fParam: 'all', fSubject: 'all', fLimit: '20',
+    rulesShowDeleted: false, reValidFrom: '', reValidTo: '',
+    curId: 'a1b2c3d4', cardTab: 'overview', editMode: false,
+    wizardOpen: false, step: 1,
+    scopeRows: [
+      { id: 1, type: 'MED_OFFICE', value: 'Москва-1', all: false, account: '', extra: ['СМО'], region: '' },
+      { id: 2, type: 'PRODUCT', value: '', all: true, account: '', extra: [], region: '' }
+    ],
+    ruleMode: 'existing', ruleQuery: '', selectedRule: 'r1',
+    reName: '', reDesc: '',
+    reConditions: [{ id: 1, parameter: 'AGE', operator: 'gte', value: '18', unit: 'год', weekFrom: '', weekTo: '', text: 'Услуга доступна с 18 лет' }],
+    subjects: { PATIENT: true, OPERATOR_CC: true, DOCTOR: false, ADMIN_ARMPS: false },
+    applyFrom: '', comment: '',
+    demoResponse: '201',
+    conflict: null, forceAck: false,
+    confirm: null, toasts: [],
+    ruleEditorId: null,
+    authed: false, rememberMe: true, cardScopeRows: [], suggestOpen: null, submitting: false
+  };
+
+  REFS = {
+    refObjects: {
+      title: 'Типы объектов', subtitle: 'Из них собирается область применения ограничения',
+      columns: ['Код', 'Название', 'Поиск и дополнительные параметры'],
+      cols: 'minmax(0,1fr) minmax(0,1fr) minmax(0,2.2fr)',
+      rows: [
+        ['MED_OFFICE', 'Медицинский офис', 'Код или название + форма собственности (СМО, ФМО-ЛФР, ФМО-МФР)'],
+        ['CABINET', 'Кабинет', 'Название + тип: фактический или виртуальный'],
+        ['DOCTOR', 'Врач', 'ФИО или учётная запись + специализация'],
+        ['DOCTOR_SPECIALITY', 'Специальность врача', 'Название'],
+        ['PRODUCT', 'Продукт', 'Название или артикул + страна присутствия и агломерация'],
+        ['AGGLOMERATION', 'Агломерация', 'Название'],
+        ['COUNTRY', 'Страна', 'Название'],
+        ['CITY', 'Город', 'Название']
+      ],
+      footer: 'Справочник расширяемый: новые типы появляются в интерфейсе автоматически, без доработки.'
+    },
+    refRestrictions: {
+      title: 'Типы ограничений', subtitle: 'Параметры, по которым строятся условия правила',
+      columns: ['Код', 'Название', 'Доступные сравнения', 'Ввод значения', 'Пример'],
+      cols: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1.15fr) minmax(0,1.4fr) minmax(0,1.1fr)',
+      rows: [
+        ['AGE', 'Возраст', '= ≠ > ≥ < ≤', 'Число + единица (год, месяц)', 'Возраст ≥ 18 лет'],        ['GENDER', 'Пол', '= ≠', 'Список: Мужской / Женский', 'Пол = Женский'],
+        ['PREGNANCY', 'Беременность', '= ≠, с — по', 'Да / Нет или диапазон недель (1–42)', 'Беременность 12–28 недель'],
+        ['WEIGHT', 'Вес', '= ≠ > ≥ < ≤', 'Число + единица (кг)', 'Вес ≤ 130 кг'],
+        ['— другое —', 'Неизвестный параметр', 'полный набор', 'Текстовое поле', 'Значение как есть']
+      ],
+      footer: 'Список открытый: для незнакомого параметра интерфейс показывает нейтральный бейдж и текстовый ввод.'
+    },
+    refSubjects: {
+      title: 'Типы субъектов', subtitle: 'Кому может показываться ограничение',
+      columns: ['Код', 'Название'],
+      cols: 'minmax(0,1fr) minmax(0,1.4fr)',
+      rows: [
+        ['PATIENT', 'Пациент'],
+        ['OPERATOR_CC', 'Оператор КЦ'],
+        ['DOCTOR', 'Врач'],
+        ['ADMIN_ARMPS', 'Админ АРМПС']
+      ],
+      footer: 'Каждый потребитель запрашивает ограничения только для своего типа субъекта.'
+    }
+  };
+
+  DATA = [
+    { id: 'a1b2c3d4-5717-4562-b3fc-2c963f66afa6', ruleId: 'e2c1f0aa-11d0-4c1f-9f0e-6a1d0b8a91c2', scope: [['MED_OFFICE', 'Москва-1', '9f1c7d20-4a3b-4f10-8c21-77e0f0c1a501'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 18+', desc: 'Услуги для совершеннолетних', conds: [['AGE', 'gte', '18 год', 'Услуга доступна с 18 лет', '{"value":18,"unit":"год"}']], subjects: ['PATIENT', 'OPERATOR_CC'], applyFrom: '', created: '2026-05-21T14:30:00+03:00', updated: '2026-08-20T11:04:00+03:00' },
+    { id: 'b2c3d4e5-2f81-4a77-9d33-51b0c9a77c10', ruleId: 'a7b8c9d0-2e31-4d55-9a12-3f4b5c6d7e88', scope: [['DOCTOR', 'Иванов И.И.', '1c8b4e33-9f21-4a7d-91b0-2c4d5e6f7a80'], ['DOCTOR_SPECIALITY', 'Гинеколог', '4d5e6f7a-8b90-4c12-9d34-5e6f7a8b9c01']], rule: 'Только женщины', desc: 'Приём женского профиля', conds: [['GENDER', 'eq', 'Женский', 'Услуга оказывается женщинам', '{"value":"Женский"}']], subjects: ['PATIENT'], applyFrom: '', created: '2026-06-02T09:12:00+03:00', updated: '2026-06-02T09:12:00+03:00' },
+    { id: 'c3d4e5f6-6b12-4e09-8a55-9d0e1f2a3b44', ruleId: 'c1d2e3f4-7a89-4b01-8c23-4d5e6f7a8b90', scope: [['MED_OFFICE', 'Санкт-Петербург-4', '7a8b9c0d-1e2f-4a3b-8c4d-5e6f7a8b9c0d'], ['PRODUCT', 'Холтер ЭКГ', '2b3c4d5e-6f70-4a81-9b92-0c1d2e3f4a55'], ['CITY', 'Санкт-Петербург', '8c9d0e1f-2a3b-4c5d-9e6f-7a8b9c0d1e2f'], ['CABINET', 'Каб. 3', '5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b']], rule: 'Беременность и вес', desc: 'Два условия одновременно', conds: [['PREGNANCY', 'between', '12–28 недель', 'Приём ведётся с 12 по 28 неделю беременности', '{"value":false}'], ['WEIGHT', 'lte', '130 кг', 'Ограничение по весу до 130 кг', '{"value":130,"unit":"кг"}']], subjects: ['PATIENT', 'OPERATOR_CC', 'DOCTOR'], applyFrom: '', created: '2026-06-11T17:45:00+03:00', updated: '2026-07-02T10:15:00+03:00' },
+    { id: 'd4e5f6a7-0c34-4b76-9e01-6a7b8c9d0e12', ruleId: 'f0a1b2c3-4d56-4e78-9a01-2b3c4d5e6f70', scope: [['AGGLOMERATION', 'Москва и МО', '3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 16+', desc: 'Плановый ввод с сентября', conds: [['AGE', 'gte', '16 год', 'Услуга доступна с 16 лет', '{"value":16,"unit":"год"}']], subjects: ['PATIENT'], applyFrom: '2026-09-01', created: '2026-07-18T11:02:00+03:00', updated: '2026-07-18T11:02:00+03:00' }
+  ];
+
+  RULES = [
+    { id: 'e2c1f0aa-11d0-4c1f-9f0e-6a1d0b8a91c2', name: 'Возрастное ограничение 18+', desc: 'Услуга доступна совершеннолетним пациентам', conds: [['AGE', 'gte', '18 год', 'Услуга доступна с 18 лет', '{"value":18,"unit":"год"}']], validFrom: '2026-01-01', validTo: '', updated: '2026-05-21T14:30:00+03:00', deleted: false },
+    { id: 'a7b8c9d0-2e31-4d55-9a12-3f4b5c6d7e88', name: 'Только женщины', desc: 'Услуги женского профиля', conds: [['GENDER', 'eq', 'Женский', 'Услуга оказывается женщинам', '{"value":"Женский"}']], validFrom: '', validTo: '', updated: '2026-06-02T09:12:00+03:00', deleted: false },
+    { id: 'c1d2e3f4-7a89-4b01-8c23-4d5e6f7a8b90', name: 'Беременность и вес', desc: 'Комбинированное правило для функциональной диагностики', conds: [['PREGNANCY', 'between', '12–28 недель', 'Приём ведётся с 12 по 28 неделю беременности', '{"value":false}'], ['WEIGHT', 'lte', '130 кг', 'Ограничение по весу до 130 кг', '{"value":130,"unit":"кг"}']], validFrom: '2026-03-01', validTo: '2027-03-01', updated: '2026-07-02T10:15:00+03:00', deleted: false },
+    { id: 'f0a1b2c3-4d56-4e78-9a01-2b3c4d5e6f70', name: 'Возрастное ограничение 16+', desc: 'Для отдельных агломераций', conds: [['AGE', 'gte', '16 год', 'Услуга доступна с 16 лет', '{"value":16,"unit":"год"}']], validFrom: '2026-09-01', validTo: '', updated: '2026-07-18T11:02:00+03:00', deleted: false },
+    { id: '6d7e8f90-1a2b-4c3d-8e4f-5a6b7c8d9e0f', name: 'Ограничение по весу до 120 кг', desc: 'Заменено правилом «Беременность и вес»', conds: [['WEIGHT', 'lte', '120 кг', 'Ограничение по весу до 120 кг', '{"value":120,"unit":"кг"}']], validFrom: '', validTo: '2026-06-30', updated: '2026-06-30T18:00:00+03:00', deleted: true }
+  ];
+
+  // ---------- helpers ----------
+  ds() { return this.props.dataState || 'normal'; }
+  ro() { return !!this.props.readOnly; }
+  opSym(c) { const f = this.OPS.find(o => o[0] === c); return f ? f[1] : '='; }
+  badge(p, opCode, val) {
+    const parts = String(val).trim().split(' ');
+    const declined = p === 'PREGNANCY' ? val : (parts.length === 2 ? parts[0] + ' ' + (this.unitLabel(parts[0], parts[1]) || parts[1]) : val);
+    const map = {
+      AGE: ['#E3F2FD', '#0D47A1', '#BBDEFB'],
+      GENDER: ['#FCE7F3', '#9D174D', '#F9CFE4'],
+      PREGNANCY: ['#EDE9FE', '#5B21B6', '#DDD6FE'],
+      WEIGHT: ['#FEF3C7', '#7A4A00', '#FDE68A']
+    };
+    const c = map[p] || ['#EEF2F4', '#4A5257', '#E2EAEC'];
+    return {
+      label: (this.PARAMS[p] || p) + (p === 'PREGNANCY' && opCode === 'between' ? ' ' : ' ' + this.opSym(opCode) + ' ') + declined,
+      style: 'display:inline-flex;align-items:center;max-width:100%;background:' + c[0] + ';color:' + c[1] + ';border:1px solid ' + c[2] + ';border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:700;font-family:ui-monospace,monospace;overflow-wrap:anywhere'
+    };
+  }
+  statusPill(s) {
+    const m = {
+      Active: ['Действует', '#E4F6EC', '#146C3A', '#BFE7CE'],
+      Scheduled: ['Запланировано', '#E3F2FD', '#0D47A1', '#BBDEFB']
+    }[s];
+    return { label: m[0], style: 'display:inline-flex;align-items:center;background:' + m[1] + ';color:' + m[2] + ';border:1px solid ' + m[3] + ';border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:700' };
+  }
+  toast(text, kind) {
+    const id = Date.now() + Math.random();
+    const bg = kind === 'error' ? '#B3261E' : kind === 'info' ? '#2C3A3E' : '#146C3A';
+    this.setState(s => ({ toasts: s.toasts.concat([{ id, text, bg }]) }));
+    setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(t => t.id !== id) })), 5000);
+  }
+  unitOptsFor(p) { return p === 'AGE' ? ['год', 'месяц'] : p === 'WEIGHT' ? ['кг'] : ['—']; }
+  opsFor(p) {
+    if (p === 'PREGNANCY') return [{ value: 'eq', label: '=  есть беременность' }, { value: 'ne', label: '≠  нет беременности' }, { value: 'between', label: 'с — по (диапазон недель)' }];
+    const allow = p === 'GENDER' ? ['eq', 'ne'] : ['eq', 'ne', 'gt', 'gte', 'lt', 'lte'];
+    return this.OPS.filter(o => allow.indexOf(o[0]) >= 0).map(o => ({ value: o[0], label: o[1] + '  ' + o[2] }));
+  }
+  weekPlural(n) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return 'недели';
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'недели';
+    return 'недель';
+  }
+  weekRangeLabel(from, to) {
+    const a = parseInt(from, 10), b = parseInt(to, 10);
+    if (isNaN(a) || isNaN(b)) return '—';
+    return a + '–' + b + ' ' + this.weekPlural(b);
+  }
+  weekError(from, to) {
+    const a = parseInt(from, 10), b = parseInt(to, 10);
+    if (isNaN(a) || isNaN(b)) return 'Укажите начальную и конечную неделю';
+    if (a < 1 || b > 42) return 'Допустимый диапазон — с 1 по 42 неделю';
+    if (a > b) return 'Начальная неделя больше конечной';
+    return '';
+  }
+  condPayloadUnused() { return ''; }
+  fmtDateTime(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    const p = n => String(n).padStart(2, '0');
+    return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  fmtDate(iso) { return iso ? iso.split('-').reverse().join('.') : ''; }
+  isFuture(iso) { return !!iso && new Date(iso).getTime() > Date.now(); }
+  condValueLabel(c) {
+    if (c.parameter === 'PREGNANCY') return c.operator === 'between' ? this.weekRangeLabel(c.weekFrom, c.weekTo) : (c.operator === 'ne' ? 'Нет' : 'Да');
+    if (c.parameter === 'AGE' || c.parameter === 'WEIGHT') {
+      const u = this.unitLabel(c.value, c.unit);
+      return (c.value || '—') + (u ? ' ' + u : '');
+    }
+    return c.value || '—';
+  }
+  scopeChipLabel(o) { return this.scopeFullLabel(o); }
+  scopeValid() {
+    const rows = this.state.scopeRows;
+    if (!rows.length) return 'Добавьте хотя бы один объект';
+    for (const r of rows) if (!this.scopeLocked(r) && !r.value.trim()) return 'Укажите объект или отметьте «Все»';
+    const seen = {};
+    for (const r of rows) { const k = r.type + '|' + (r.all ? '*' : r.value.trim()); if (seen[k]) return 'Такой объект уже добавлен'; seen[k] = 1; }
+    if (rows.length > 50) return 'Достигнут лимит в 50 объектов';
+    return '';
+  }
+  ruleEditorError() {
+    if (!this.state.reName.trim()) return 'Укажите название правила';
+    if (!this.state.reConditions.length) return 'Добавьте хотя бы одно условие';
+    if (this.state.reConditions.some(c => !c.text.trim())) return 'Заполните текст ограничения';
+    const wc = this.state.reConditions.filter(c => c.parameter === 'PREGNANCY' && c.operator === 'between').map(c => this.weekError(c.weekFrom, c.weekTo)).filter(Boolean);
+    return wc.length ? wc[0] : '';
+  }
+  step2Valid() {
+    if (this.state.ruleMode === 'existing') return this.state.selectedRule ? '' : 'Выберите правило';
+    if (!this.state.reName.trim()) return 'Укажите название правила';
+    if (!this.state.reConditions.length) return 'Добавьте хотя бы одно условие';
+    if (this.state.reConditions.some(c => !c.text.trim())) return 'Заполните текст ограничения';
+    const wc = this.state.reConditions.filter(c => c.parameter === 'PREGNANCY' && c.operator === 'between').map(c => this.weekError(c.weekFrom, c.weekTo)).filter(Boolean);
+    if (wc.length) return wc[0];
+    return '';
+  }
+  step3Valid() { return Object.keys(this.state.subjects).some(k => this.state.subjects[k]) ? '' : 'Выберите хотя бы одного получателя'; }
+  stepError(n) { return n === 1 ? this.scopeValid() : n === 2 ? this.step2Valid() : n === 3 ? this.step3Valid() : ''; }
+  curRule() { return this.RULES.find(r => r.id === this.state.selectedRule) || this.RULES[0]; }
+  cur() { return this.DATA.find(d => d.id === this.state.curId) || this.DATA[0]; }
+  componentDidMount() {}
+  navGo(route) { this.setState({ route, editMode: false, cardTab: 'overview', suggestOpen: null }); }
+  patchCond(id, patch) {
+    this.setState(s => ({ reConditions: s.reConditions.map(c => c.id === id ? Object.assign({}, c, patch) : c) }));
+  }
+
+  condVM(c, i, compact) {
+    const b = this.badge(c.parameter, c.operator, this.condValueLabel(c));
+    const isNum = c.parameter === 'AGE' || c.parameter === 'WEIGHT';
+    const isWeeks = c.parameter === 'PREGNANCY' && c.operator === 'between';
+    const isPregBool = c.parameter === 'PREGNANCY' && c.operator !== 'between';
+    const wErr = isWeeks ? this.weekError(c.weekFrom, c.weekTo) : '';
+    const wInput = bad => 'width:64px;text-align:center;border:none;box-shadow:inset 0 0 0 1px ' + (bad ? '#DB0000' : '#DCE6E8') + ';border-radius:9px;padding:10px 8px;font-size:12.5px';
+    return {
+      title: 'Условие ' + (i + 1),
+      parameter: c.parameter, operator: c.operator, value: c.value, unit: c.unit,
+      text: c.text,
+      badge: b.label, badgeStyle: b.style,
+      previewText: c.text || 'Текст ограничения появится здесь',
+      textCounter: (c.text || '').length + ' / 300',
+      operatorOpts: this.opsFor(c.parameter),
+      unitOpts: this.unitOptsFor(c.parameter),
+      enumOpts: [{ value: 'Мужской', label: 'Мужской' }, { value: 'Женский', label: 'Женский' }],
+      isNumber: isNum, isEnum: c.parameter === 'GENDER', isWeeks, isPregBool,
+      pregBoolValue: c.operator === 'ne' ? 'Нет' : 'Да',
+      pregBoolLabel: c.operator === 'ne' ? 'Условие сработает, если беременности нет' : 'Условие сработает при беременности',
+      isText: !isNum && !isWeeks && !isPregBool && c.parameter !== 'GENDER',
+      weekFrom: c.weekFrom || '', weekTo: c.weekTo || '',
+      weekFromStyle: wInput(!!wErr), weekToStyle: wInput(!!wErr),
+      weekHint: wErr || 'Приём ведётся в этом диапазоне недель (1–42)',
+      setWeekFrom: e => this.patchCond(c.id, { weekFrom: e.target.value.replace(/[^0-9]/g, '') }),
+      setWeekTo: e => this.patchCond(c.id, { weekTo: e.target.value.replace(/[^0-9]/g, '') }),
+      setParameter: e => {
+        const p = e.target.value;
+        this.patchCond(c.id, { parameter: p, operator: this.opsFor(p)[0].value, unit: this.unitOptsFor(p)[0], value: '', weekFrom: p === 'PREGNANCY' ? '12' : '', weekTo: p === 'PREGNANCY' ? '28' : '' });
+      },
+      setOperator: e => this.patchCond(c.id, { operator: e.target.value }),
+      setValue: e => this.patchCond(c.id, { value: e.target.value }),
+      setUnit: e => this.patchCond(c.id, { unit: e.target.value }),
+      setText: e => this.patchCond(c.id, { text: e.target.value }),
+      remove: () => this.setState(s => ({ reConditions: s.reConditions.filter(x => x.id !== c.id) }))
+    };
+  }
+
+  submit(force) {
+    const r = this.state.demoResponse;
+    this.setState({ submitting: true });
+    setTimeout(() => {
+      this.setState({ submitting: false });
+      if (r === '201' || force) {
+        this.setState({ wizardOpen: false, conflict: null, forceAck: false, route: 'card', curId: this.DATA[0].id, cardTab: 'overview' });
+        this.toast('Ограничение создано');
+      } else {
+        this.setState({ conflict: r, forceAck: false });
+      }
+    }, 650);
+  }
+
+  renderVals() {
+    const st = this.state, ds = this.ds(), ro = this.ro();
+
+    // nav
+    const navItem = (active) => 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:2px;cursor:pointer;font-size:13px;font-weight:' + (active ? '700' : '500') + ';color:' + (active ? '#0E8E9E' : '#5A6068') + ';background:' + (active ? '#EBF8FA' : 'transparent');
+    const counter = (active, count) => count ? 'font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:' + (active ? '#1AB7C9' : '#EEF2F4') + ';color:' + (active ? '#fff' : '#6D757C') : 'display:none';
+    const listActive = st.route === 'list' || st.route === 'card';
+    const rulesActive = st.route === 'rules' || st.route === 'ruleEditor';
+
+    // list rows — фильтры повторяют query-параметры GET /api/v1/admin/restrictions
+    let data = this.DATA.slice();
+    if (st.fType !== 'all') data = data.filter(d => d.scope.some(s => s[0] === st.fType));
+    if (st.fParam !== 'all') data = data.filter(d => d.conds.some(c => c[0] === st.fParam));
+    if (st.fSubject !== 'all') data = data.filter(d => d.subjects.indexOf(st.fSubject) >= 0);
+    if (st.query.trim().length >= 2) {
+      const q = st.query.trim().toLowerCase();
+      data = data.filter(d => (d.id + ' ' + d.rule + ' ' + d.desc + ' ' + d.scope.map(s => s[1] + ' ' + (s[2] || '')).join(' ')).toLowerCase().indexOf(q) >= 0);
+    }
+    if (ds === 'emptyAll') data = [];
+    const rows = data.map(d => {
+      const status = this.isFuture(d.applyFrom) ? 'Scheduled' : 'Active';
+      const pill = this.statusPill(status);
+      const scope = d.scope.slice(0, 3).map(s => ({ type: this.OT[s[0]][1], value: s[1] }));
+      const badges = d.conds.slice(0, 2).map(c => {
+        const b = this.badge(c[0], c[1], c[2]);
+        return { label: b.label, style: b.style, title: c[3] };
+      });
+      if (d.conds.length > 2) badges.push({ label: '+' + (d.conds.length - 2), style: 'background:#EEF2F4;color:#5A6068;border:1px solid #E2EAEC;border-radius:6px;padding:4px 8px;font-size:11.5px;font-weight:700', title: '' });
+      return {
+        scope, badges,
+        hasMoreScope: d.scope.length > 3,
+        moreScope: '+' + (d.scope.length - 3) + ' ещё',
+        scopeFull: d.scope.map(s => this.OT[s[0]][1] + ': ' + s[1]).join(' И '),
+        andHint: d.scope.length > 1 ? 'ВСЕ ОБЪЕКТЫ ОДНОВРЕМЕННО (И)' : '',
+        ruleName: d.rule,
+        condCount: this.plur(d.conds.length, 'condition'),
+        subjects: d.subjects.slice(0, 2).map(s => this.SUBJ[s]).join(', ') + (d.subjects.length > 2 ? ' +' + (d.subjects.length - 2) : ''),
+        subjectsFull: d.subjects.map(s => this.SUBJ[s]).join(', '),
+        statusLabel: pill.label, statusStyle: pill.style,
+        statusTitle: status === 'Scheduled' ? 'Вступает в силу ' + this.fmtDate(d.applyFrom) : 'Действует сейчас',
+        rowStyle: 'display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) 140px 44px;gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:start',
+        open: () => this.setState({ route: 'card', curId: d.id, cardTab: 'overview', editMode: false }),
+        menu: e => { e.stopPropagation(); this.setState({ route: 'card', curId: d.id, cardTab: 'overview', editMode: false }); }
+      };
+    });
+
+    const showSkeleton = ds === 'loading';
+    const showError = ds === 'error';
+    const emptyFiltered = ds === 'emptyFiltered' || (ds === 'normal' && rows.length === 0 && this.DATA.length > 0);
+    const showEmptyAll = ds === 'emptyAll';
+    const showRows = !showSkeleton && !showEmptyAll && !emptyFiltered && !(ds === 'error' && rows.length === 0);
+
+    const chips = [];
+    if (st.fType !== 'all') chips.push({ label: 'Объект: ' + this.OT[st.fType][0], remove: () => this.setState({ fType: 'all' }) });
+    if (st.fParam !== 'all') chips.push({ label: 'Ограничение: ' + this.PARAMS[st.fParam], remove: () => this.setState({ fParam: 'all' }) });
+    if (st.fSubject !== 'all') chips.push({ label: 'Субъект: ' + this.SUBJ[st.fSubject], remove: () => this.setState({ fSubject: 'all' }) });
+    if (st.query) chips.push({ label: 'Поиск: ' + st.query, remove: () => this.setState({ query: '' }) });
+
+    // card
+    const cur = this.cur();
+    const curPill = this.statusPill(this.isFuture(cur.applyFrom) ? 'Scheduled' : 'Active');
+    const cardScope = cur.scope.map((s, i) => ({
+      type: this.OT[s[0]][0], value: s[1] + (this.CARD_EXTRA[s[0]] ? ' · ' + this.CARD_EXTRA[s[0]] : ''),
+      uuid: s[2] ? '' : 'Все объекты этого типа',
+      and: i < cur.scope.length - 1 ? 'И' : ''
+    }));
+    const cardConditions = cur.conds.map(c => {
+      const b = this.badge(c[0], c[1], c[2]);
+      return { badge: b.label, badgeStyle: b.style, text: c[3] };
+    });
+    // wizard
+    const steps = ['Объекты', 'Правило', 'Субъекты', 'Подтверждение'].map((label, i) => {
+      const n = i + 1, done = n < st.step, active = n === st.step;
+      return {
+        label, mark: done ? '✓' : String(n),
+        wrapStyle: 'display:flex;align-items:center;gap:8px;flex:1;cursor:' + (done ? 'pointer' : 'default'),
+        circleStyle: 'width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:' + (done ? '#146C3A' : active ? '#1AB7C9' : '#fff') + ';color:' + (done || active ? '#fff' : '#9AA2A9') + ';border:1px solid ' + (done ? '#146C3A' : active ? '#1AB7C9' : '#DCE6E8'),
+        labelStyle: 'font-size:12px;font-weight:' + (active ? '700' : '500') + ';color:' + (active ? '#1A1A1A' : '#8A9099'),
+        go: () => { if (done) this.setState({ step: n }); }
+      };
+    });
+    const scopeRows = st.scopeRows.map((o, i) => this.scopeRowVM(o, i, st.scopeRows,
+      (id, p) => this.setState(s => ({ scopeRows: s.scopeRows.map(x => x.id === id ? Object.assign({}, x, p) : x) })),
+      id => this.setState(s => ({ scopeRows: s.scopeRows.filter(x => x.id !== id) })), 'wiz'
+    ));
+    const n = st.scopeRows.length;
+    const scopeCounterStyle = 'font-size:12px;font-weight:700;color:' + (n >= 50 ? '#B3261E' : n >= 45 ? '#B26A00' : '#6D757C');
+    const ruleQ = st.ruleQuery.trim().toLowerCase();
+    const validityOf = r => r.validFrom || r.validTo ? (this.fmtDate(r.validFrom) || '—') + ' — ' + (this.fmtDate(r.validTo) || '∞') : 'Без срока';
+    const ruleList = this.RULES.filter(r => !r.deleted).filter(r => !ruleQ || r.name.toLowerCase().indexOf(ruleQ) >= 0);
+    const ruleOptions = ruleList.map(r => ({
+      name: r.name, desc: r.desc, validity: validityOf(r),
+      badges: r.conds.map(c => { const b = this.badge(c[0], c[1], c[2]); return { label: b.label, style: b.style }; }),
+      style: 'border:1px solid ' + (st.selectedRule === r.id ? '#1AB7C9' : '#E2EAEC') + ';background:' + (st.selectedRule === r.id ? '#EBF8FA' : '#fff') + ';border-radius:12px;padding:14px;cursor:pointer',
+      select: () => this.setState({ selectedRule: r.id })
+    }));
+    const selRule = this.curRule();
+    const segStyle = on => 'border:none;background:' + (on ? '#fff' : 'transparent') + ';color:' + (on ? '#0E8E9E' : '#5A6068') + ';font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:8px;box-shadow:' + (on ? '0 1px 3px rgba(20,60,70,.12)' : 'none');
+
+    const applyLabel = st.applyFrom ? 'Запланировано' : 'немедленно';
+    const summary = [
+      { label: 'Область применения', step: 1, lines: st.scopeRows.map(o => this.scopeChipLabel(o)).concat([st.scopeRows.length > 1 ? '↳ все объекты должны совпасть одновременно (И)' : '']).filter(Boolean) },
+      { label: 'Правило', step: 2, lines: [st.ruleMode === 'existing' ? selRule.name : (st.reName || 'Новое правило'), st.ruleMode === 'existing' ? selRule.desc : st.reDesc].filter(Boolean) },
+      { label: 'Условия', step: 2, lines: (st.ruleMode === 'existing' ? selRule.conds.map(c => this.badge(c[0], c[1], c[2]).label + ' · «' + c[3] + '»') : st.reConditions.map(c => this.badge(c.parameter, c.operator, this.condValueLabel(c)).label + ' · «' + (c.text || '—') + '»')) },
+      { label: 'Субъект', step: 3, lines: [Object.keys(st.subjects).filter(k => st.subjects[k]).map(k => this.SUBJ[k]).join(', ') || '—'] },
+      { label: 'Применить с и описание', step: 3, lines: [st.applyFrom ? this.fmtDate(st.applyFrom) : 'Сразу после создания', st.comment ? 'Описание: ' + st.comment : ''].filter(Boolean) }
+    ].map(s => Object.assign(s, { edit: () => this.setState({ step: s.step }) }));
+
+    const stepErr = this.stepError(st.step);
+    const nextLabel = st.step === 4 ? 'Создать ✓' : 'Далее →';
+    const nextStyle = 'border:none;background:' + (stepErr ? '#C9D6D9' : st.step === 4 ? '#146C3A' : '#1AB7C9') + ';color:#fff;font-weight:700;font-size:13px;padding:11px 20px;border-radius:10px;cursor:' + (stepErr ? 'not-allowed' : 'pointer');
+
+    // conflict
+    const cf = st.conflict;
+    const cfTitle = cf === 'DUPLICATE' ? 'Конфликт: дубликат' : cf === 'MORE_SPECIFIC_EXISTS' ? 'Конфликт: есть более специфичное ограничение' : 'Конфликт: пересечение областей применения';
+    const cfBody = cf === 'DUPLICATE' ? 'Для этой области применения уже есть ограничение с тем же параметром. Создать второе нельзя.' : cf === 'MORE_SPECIFIC_EXISTS' ? 'Уже есть ограничение с более узкой областью применения по тому же параметру. Оно имеет приоритет.' : 'Области применения пересекаются, но ни одна не является более узкой. Можно создать принудительно — в зоне пересечения покажутся оба ограничения.';
+    const cfMessageUnused = 0;
+
+    // rules table
+    const rulesCols = 'minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)';
+    const rules = this.RULES.filter(r => st.rulesShowDeleted || !r.deleted).map(r => ({
+      name: r.name, desc: r.desc, updated: this.fmtDateTime(r.updated), validity: validityOf(r), isDeleted: r.deleted,
+      badges: r.conds.map(c => { const b = this.badge(c[0], c[1], c[2]); return { label: b.label, style: b.style }; }),
+      rowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center;opacity:' + (r.deleted ? '.6' : '1'),
+      open: () => this.setState({ route: 'ruleEditor', ruleEditorId: r.id, reName: r.name, reDesc: r.desc, reValidFrom: r.validFrom, reValidTo: r.validTo, reConditions: r.conds.map((c, i) => {
+        const parts = String(c[2]).split(' ');
+        const weeks = c[0] === 'PREGNANCY' ? String(c[2]).split(' ')[0].split('–') : null;
+        return { id: i + 1, parameter: c[0], operator: c[1], value: weeks ? '' : parts[0], unit: weeks ? '—' : (parts[1] || '—'), weekFrom: weeks ? weeks[0] : '', weekTo: weeks ? weeks[1] : '', text: c[3] };
+      }) })
+    }));
+
+    // reference tables
+    const refKey = ['refObjects', 'refRestrictions', 'refSubjects'].indexOf(st.route) >= 0 ? st.route : null;
+    const ref = refKey ? this.REFS[refKey] : null;
+    const mono = 'min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:700;font-family:ui-monospace,monospace;color:#3E464D';
+    const plain = 'min-width:0;overflow-wrap:anywhere;font-size:12.5px;color:#3E464D;line-height:1.45';
+
+    return {
+      readOnly: ro, canEdit: !ro,
+      authed: st.authed, notAuthed: !st.authed,
+      rememberMe: st.rememberMe,
+      toggleRemember: () => this.setState(s => ({ rememberMe: !s.rememberMe })),
+      signIn: () => { this.setState({ authed: true, route: 'list' }); this.toast('Вы вошли как i.ivanov@invitro.ru', 'info'); },
+      signOut: () => this.setState({ authed: false, route: 'list', wizardOpen: false, confirm: null, conflict: null, editMode: false }),
+      navGroups: [
+        { title: 'Основное', items: [
+          { label: 'Ограничения', count: '147', style: navItem(listActive), countStyle: counter(listActive, '147'), go: () => this.navGo('list') },
+          { label: 'Правила', count: '42', style: navItem(rulesActive), countStyle: counter(rulesActive, '42'), go: () => this.navGo('rules') }
+        ] },
+        { title: 'Справочники', items: [
+          { label: 'Типы объектов', count: '8', style: navItem(st.route === 'refObjects'), countStyle: counter(st.route === 'refObjects', '8'), go: () => this.navGo('refObjects') },
+          { label: 'Типы ограничений', count: '4', style: navItem(st.route === 'refRestrictions'), countStyle: counter(st.route === 'refRestrictions', '4'), go: () => this.navGo('refRestrictions') },
+          { label: 'Типы субъектов', count: '4', style: navItem(st.route === 'refSubjects'), countStyle: counter(st.route === 'refSubjects', '4'), go: () => this.navGo('refSubjects') }
+        ] },
+      ],
+      isList: st.route === 'list', isCard: st.route === 'card', isRules: st.route === 'rules',
+      isRuleEditor: st.route === 'ruleEditor', isRef: !!ref,
+
+      // reference tables
+      refTitle: ref ? ref.title : '', refSubtitle: ref ? ref.subtitle : '', refFooter: ref ? ref.footer : '',
+      refColumns: ref ? ref.columns : [],
+      refHeadStyle: 'display:grid;grid-template-columns:' + (ref ? ref.cols : '1fr') + ';gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099',
+      refRowStyle: 'display:grid;grid-template-columns:' + (ref ? ref.cols : '1fr') + ';gap:16px;padding:14px 18px;border-bottom:1px solid #F0F5F6;align-items:center',
+      refRows: ref ? ref.rows.map(r => ({ cells: r.map((c, i) => ({ text: c, style: i === 0 ? mono : plain })) })) : [],
+
+      goList: () => this.navGo('list'), goRules: () => this.navGo('rules'),
+      newRule: () => this.setState({ route: 'ruleEditor', ruleEditorId: null, reName: '', reDesc: '', reValidFrom: '', reValidTo: '', reConditions: [{ id: 1, parameter: 'AGE', operator: 'gte', value: '', unit: 'год', weekFrom: '', weekTo: '', text: '' }] }),
+
+      // list
+      listCountLabel: showSkeleton ? 'Загрузка…' : 'Найдено: ' + rows.length + ' из 147',
+      pagerLabel: 'Строк на странице: ' + st.fLimit,
+      rows, skeleton: [1, 2, 3, 4, 5], showSkeleton, showError, showRows,
+      showEmptyAll, showEmptyFiltered: emptyFiltered,
+      retry: () => this.toast('Повторный запрос отправлен', 'info'),
+      chips, hasChips: chips.length > 0,
+      resetFilters: () => this.setState({ fType: 'all', fParam: 'all', fSubject: 'all', query: '' }),
+      query: st.query, hasQuery: !!st.query,
+      setQuery: e => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      fType: st.fType, fParam: st.fParam, fSubject: st.fSubject, fLimit: st.fLimit,
+      setFType: e => this.setState({ fType: e.target.value }),
+      setFParam: e => this.setState({ fParam: e.target.value }),
+      setFSubject: e => this.setState({ fSubject: e.target.value }),
+      setFLimit: e => this.setState({ fLimit: e.target.value }),
+      typeFilterOpts: [{ value: 'all', label: 'Объект: все' }].concat(Object.keys(this.OT).map(k => ({ value: k, label: this.OT[k][0] }))),
+      paramFilterOpts: [{ value: 'all', label: 'Ограничение: все' }].concat(Object.keys(this.PARAMS).map(k => ({ value: k, label: this.PARAMS[k] }))),
+      subjectFilterOpts: [{ value: 'all', label: 'Субъект: все' }].concat(Object.keys(this.SUBJ).map(k => ({ value: k, label: this.SUBJ[k] }))),
+      rulesShowDeleted: st.rulesShowDeleted,
+      toggleRulesDeleted: () => this.setState(s => ({ rulesShowDeleted: !s.rulesShowDeleted })),
+      openWizard: () => this.setState({ wizardOpen: true, step: 1, suggestOpen: null }),
+
+      // card
+      cardTitle: 'Ограничение ' + cur.id.slice(0, 8) + '…',
+      cardSubtitle: cur.rule + ' · ' + this.plur(cur.conds.length, 'condition'),
+      cardStatusLabel: curPill.label, cardStatusStyle: curPill.style,
+      cardScope, cardConditions,
+      cardRuleName: cur.rule, cardRuleDesc: cur.desc,
+      cardSubjects: cur.subjects.map(s => ({ label: this.SUBJ[s] })),
+      cardApplyFrom: cur.applyFrom ? this.fmtDate(cur.applyFrom) : 'сразу после создания',
+      cardCreated: this.fmtDateTime(cur.created), cardUpdated: this.fmtDateTime(cur.updated),
+      cardRuleId: cur.ruleId,
+      cardComment: cur.desc,
+      cardOverview: true,
+      regionOpts: this.REGIONS.map(r => ({ value: r, label: r })),
+      cardScopeReadOnly: !st.editMode,
+      cardScopeRows: st.cardScopeRows.map((o, i) => this.scopeRowVM(o, i, st.cardScopeRows,
+        (id, p) => this.setState(s => ({ cardScopeRows: s.cardScopeRows.map(x => x.id === id ? Object.assign({}, x, p) : x) })),
+        id => this.setState(s => ({ cardScopeRows: s.cardScopeRows.filter(x => x.id !== id) })), 'card'
+      )),
+      cardScopeCounter: this.plur(st.cardScopeRows.length, 'object') + ' из 50',
+      addCardScopeRow: () => { if (st.cardScopeRows.length >= 50) return; this.setState(s => ({ cardScopeRows: s.cardScopeRows.concat([this.newScopeRow('PRODUCT')]) })); },
+      editMode: st.editMode, editBtnLabel: st.editMode ? 'Режим редактирования' : 'Редактировать',
+      toggleEdit: () => this.setState(s => {
+        if (s.editMode) return { editMode: false, suggestOpen: null };
+        const cur2 = this.DATA.find(d => d.id === s.curId) || this.DATA[0];
+        return {
+          editMode: true, suggestOpen: null,
+          cardScopeRows: cur2.scope.map((o, i) => ({ id: i + 1, type: o[0], value: o[1] === 'Все' ? '' : o[1], all: o[1] === 'Все', account: '', extra: this.defaultExtra(o[0]), region: this.defaultRegion(o[0]) }))
+        };
+      }),
+      saveCard: () => { this.setState({ editMode: false }); this.toast('Изменения сохранены: область применения обновлена'); },
+      copyId: () => this.toast('ID скопирован: ' + cur.id),
+      askDelete: () => this.setState({ confirm: 'delete' }),
+
+      // rules
+      rules, reCondEmpty: st.reConditions.length === 0,
+      rulesSkeleton: ds === 'loading',
+      rulesError: ds === 'error',
+      rulesShowRows: ds !== 'loading' && ds !== 'error' && rules.length > 0,
+      rulesEmpty: ds !== 'loading' && ds !== 'error' && rules.length === 0,
+      rulesEmptyTitle: ds === 'emptyAll' || this.RULES.length === 0 ? 'Пока нет ни одного правила' : 'Нет правил для показа',
+      rulesEmptyText: ds === 'emptyAll' || this.RULES.length === 0 ? 'Создайте первое правило — его можно будет переиспользовать в ограничениях.' : 'Все правила удалены — включите показ удалённых, чтобы их увидеть.',
+      rulesSkeletonRowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:18px;border-bottom:1px solid #F0F5F6;animation:sk 1.4s ease-in-out infinite',
+      rulesHeadStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099',
+      rulesRowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center',
+
+      // rule editor
+      ruleEditorTitle: st.ruleEditorId ? 'Правило: ' + st.reName : 'Новое правило',
+      ruleReuseWarning: !!st.ruleEditorId,
+      reName: st.reName, reDesc: st.reDesc,
+      reValidFrom: st.reValidFrom, reValidTo: st.reValidTo,
+      setReName: e => this.setState({ reName: e.target.value }),
+      setReDesc: e => this.setState({ reDesc: e.target.value }),
+      setReValidFrom: e => this.setState({ reValidFrom: e.target.value }),
+      setReValidTo: e => this.setState({ reValidTo: e.target.value }),
+      reConditions: st.reConditions.map((c, i) => this.condVM(c, i)),
+      reCondCounter: st.reConditions.length + ' ' + this.plural(st.reConditions.length, 'condition') + ' из 20',
+      addReCondition: () => this.setState(s => ({ reConditions: s.reConditions.concat([{ id: Date.now(), parameter: 'AGE', operator: 'gte', value: '', unit: 'год', weekFrom: '', weekTo: '', text: '' }]) })),
+      paramOpts: Object.keys(this.PARAMS).map(k => ({ value: k, label: this.PARAMS[k] })),
+      saveRule: () => {
+        const err = this.ruleEditorError();
+        if (err) { this.toast(err, 'error'); return; }
+        this.navGo('rules');
+        this.toast('Изменения сохранены');
+      },
+      saveRuleStyle: 'border:none;background:' + (this.ruleEditorError() ? '#C9D6D9' : '#1AB7C9') + ';color:#fff;font-weight:700;font-size:12.5px;padding:10px 20px;border-radius:9px;cursor:' + (this.ruleEditorError() ? 'not-allowed' : 'pointer'),
+      saveRuleBlocked: !!this.ruleEditorError(),
+      saveRuleReason: this.ruleEditorError(),
+
+      // wizard
+      wizardOpen: st.wizardOpen, steps,
+      stepTitle: ['Шаг 1: Выбор объектов', 'Шаг 2: Правило', 'Шаг 3: Субъект', 'Шаг 4: Подтверждение'][st.step - 1],
+      isStep1: st.step === 1, isStep2: st.step === 2, isStep3: st.step === 3, isStep4: st.step === 4,
+      scopeRows, objectTypeOpts: Object.keys(this.OT).map(k => ({ value: k, label: this.OT[k][0] })),
+      addScopeRow: () => { if (st.scopeRows.length >= 50) return; this.setState(s => ({ scopeRows: s.scopeRows.concat([this.newScopeRow('PRODUCT')]) })); },
+      scopeCounter: n + ' ' + this.plural(n, 'object') + ' из 50', scopeCounterStyle,
+      scopeChips: st.scopeRows.map((o, i) => ({ label: this.scopeChipLabel(o), and: i < st.scopeRows.length - 1 ? 'И' : '' })),
+      scopeEmpty: st.scopeRows.length === 0,
+      modeIsExisting: st.ruleMode === 'existing', modeIsNew: st.ruleMode === 'new',
+      modeExisting: () => this.setState({ ruleMode: 'existing' }),
+      modeNew: () => this.setState({ ruleMode: 'new' }),
+      modeExistingStyle: segStyle(st.ruleMode === 'existing'), modeNewStyle: segStyle(st.ruleMode === 'new'),
+      ruleQuery: st.ruleQuery, setRuleQuery: e => this.setState({ ruleQuery: e.target.value }),
+      ruleOptions, noRuleResults: ruleOptions.length === 0,
+      createFromQuery: () => this.setState({ ruleMode: 'new', reName: st.ruleQuery }),
+      hasSelectedRule: ruleOptions.length > 0 && !!st.selectedRule,
+      selectedRuleConditions: selRule.conds.map(c => { const b = this.badge(c[0], c[1], c[2]); return { badge: b.label, badgeStyle: b.style, text: c[3] }; }),
+      subjectOpts: Object.keys(this.SUBJ).map(k => ({
+        label: this.SUBJ[k], code: k, checked: !!st.subjects[k], hint: this.SUBJ_HINT[k],
+        style: 'display:flex;align-items:center;gap:9px;border:1px solid ' + (st.subjects[k] ? '#1AB7C9' : '#DCE6E8') + ';background:' + (st.subjects[k] ? '#EBF8FA' : '#fff') + ';border-radius:10px;padding:11px 13px;cursor:pointer',
+        toggle: () => this.setState(s => ({ subjects: Object.assign({}, s.subjects, { [k]: !s.subjects[k] }) }))
+      })),
+      selectAllSubjects: () => this.setState({ subjects: { PATIENT: true, OPERATOR_CC: true, DOCTOR: true, ADMIN_ARMPS: true } }),
+      subjectsError: !!this.step3Valid(),
+      applyFrom: st.applyFrom, hasApplyFrom: !!st.applyFrom,
+      applyFromLabel: applyLabel,
+      applyFromBadgeStyle: 'display:inline-flex;background:' + (st.applyFrom ? '#E3F2FD' : '#EEF2F4') + ';color:' + (st.applyFrom ? '#0D47A1' : '#5A6068') + ';border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700',
+      setApplyFrom: e => this.setState({ applyFrom: e.target.value }),
+      clearApplyFrom: () => this.setState({ applyFrom: '' }),
+      comment: st.comment, setComment: e => this.setState({ comment: e.target.value }),
+      summary,
+      demoResponse: st.demoResponse, setDemoResponse: e => this.setState({ demoResponse: e.target.value }),
+      prevStyle: 'border:1px solid #B8CACE;background:#fff;color:' + (st.step === 1 ? '#B8C2C6' : '#1A1A1A') + ';font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px',
+      prevStep: () => this.setState(s => ({ step: Math.max(1, s.step - 1) })),
+      nextLabel: st.submitting ? 'Создание…' : nextLabel,
+      nextStyle: st.submitting ? nextStyle.replace('background:#146C3A', 'background:#5E8C72').replace('cursor:pointer', 'cursor:progress') : nextStyle,
+      nextBlocked: !!stepErr, nextBlockedReason: stepErr,
+      nextStep: () => { if (st.submitting) return; if (stepErr) { this.toast(stepErr, 'error'); return; } if (st.step === 4) this.submit(false); else this.setState(s => ({ step: s.step + 1 })); },
+      askCloseWizard: () => this.setState({ confirm: 'closeWizard' }),
+
+      // conflict
+      conflictOpen: !!cf, conflictTitle: cfTitle, conflictBody: cfBody,
+      conflictCode: cf || '',
+      conflictRestrictionId: 'a1b2c3d4-5717-4562-b3fc-2c963f66afa6',
+      conflictRuleId: 'Возрастное ограничение 18+',
+      conflictParameter: 'Возраст',
+      conflictScope: 'МО: Москва-1 И Продукт: все',
+      conflictValue: '≥ 18 лет',
+      conflictCompare: cf === 'MORE_SPECIFIC_EXISTS',
+      conflictForce: cf === 'OVERLAPPING',
+      conflictOpenExisting: cf === 'DUPLICATE' || cf === 'MORE_SPECIFIC_EXISTS',
+      forceAck: st.forceAck,
+      toggleForceAck: () => this.setState(s => ({ forceAck: !s.forceAck })),
+      forceBtnStyle: 'border:none;background:' + (st.forceAck ? '#F39200' : '#EADFCB') + ';color:' + (st.forceAck ? '#fff' : '#B0A48D') + ';font-weight:700;font-size:12.5px;padding:10px 18px;border-radius:9px;cursor:' + (st.forceAck ? 'pointer' : 'not-allowed'),
+      forceCreate: () => { if (!st.forceAck) { this.toast('Подтвердите пересечение галочкой', 'error'); return; } this.submit(true); },
+      backToEditing: () => this.setState({ conflict: null, step: 1 }),
+      openExisting: () => this.setState({ conflict: null, wizardOpen: false, route: 'card', curId: this.DATA[0].id }),
+
+      // confirm
+      confirmOpen: !!st.confirm,
+      confirmTitle: st.confirm === 'delete' ? 'Удалить ограничение?' : 'Закрыть без сохранения?',
+      confirmBody: st.confirm === 'delete' ? 'Ограничение перестанет показываться и исчезнет из списка активных.' : 'Введённые данные будут потеряны.',
+      confirmCancelLabel: st.confirm === 'delete' ? 'Отмена' : 'Продолжить редактирование',
+      confirmOkLabel: st.confirm === 'delete' ? 'Удалить' : 'Закрыть',
+      confirmOkStyle: 'border:none;background:' + (st.confirm === 'delete' ? '#B3261E' : '#2C3A3E') + ';color:#fff;font-weight:700;font-size:12.5px;padding:10px 18px;border-radius:9px',
+      confirmCancel: () => this.setState({ confirm: null }),
+      confirmOk: () => {
+        if (st.confirm === 'delete') { this.setState({ confirm: null, route: 'list' }); this.toast('Ограничение удалено'); }
+        else { this.setState({ confirm: null, wizardOpen: false, step: 1, suggestOpen: null }); }
+      },
+
+      // toasts
+      toasts: st.toasts.map(t => ({
+        text: t.text,
+        style: 'display:flex;align-items:center;gap:12px;background:' + t.bg + ';color:#fff;border-radius:10px;padding:11px 14px;box-shadow:0 8px 24px rgba(20,60,70,.24);animation:fadeIn .16s ease-out',
+        close: () => this.setState(s => ({ toasts: s.toasts.filter(x => x.id !== t.id) }))
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
