@@ -21,6 +21,30 @@
   @keyframes sk { 0% { opacity: .5 } 50% { opacity: 1 } 100% { opacity: .5 } }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
   ::placeholder { color: #A3ABB2; }
+  /* контролы рисуем сами: нативные стрелка и галочка отрисовываются ОС и не переносятся в макет */
+  select {
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235A6068' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important;
+    background-repeat: no-repeat !important; background-position: right 12px center !important; padding-right: 32px !important;
+  }
+  select:disabled { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23B8C2C6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important; }
+  input[type="checkbox"], input[type="radio"] {
+    -webkit-appearance: none; appearance: none; flex: none;
+    background: #fff; box-shadow: inset 0 0 0 1px #B8CACE; margin: 0;
+    background-repeat: no-repeat; background-position: center;
+  }
+  input[type="checkbox"] { border-radius: 4px; }
+  input[type="radio"] { border-radius: 50%; }
+  input[type="checkbox"]:checked {
+    background-color: #1AB7C9; box-shadow: inset 0 0 0 1px #1AB7C9;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'><path d='M1 4.6 4 7.6 10 1.4' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  }
+  input[type="radio"]:checked {
+    box-shadow: inset 0 0 0 1px #1AB7C9;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><circle cx='8' cy='8' r='4' fill='%231AB7C9'/></svg>");
+  }
+  input[type="checkbox"]:disabled, input[type="radio"]:disabled { background-color: #F4F6F7; box-shadow: inset 0 0 0 1px #DCE6E8; }
+  input[type="date"] { -webkit-appearance: none; appearance: none; }
 </style>
 </helmet>
 
@@ -61,9 +85,6 @@
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:14px">
-      <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}">
-        <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#5A6068;background:#EEF2F4;border:1px solid #E2EAEC;padding:5px 10px;border-radius:999px">Режим просмотра</span>
-      </sc-if>
       <div style="display:flex;align-items:center;gap:10px">
         <div style="width:32px;height:32px;border-radius:50%;background:#0E8E9E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">ИИ</div>
         <div style="line-height:1.25">
@@ -128,7 +149,7 @@
             </select>
             <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px;min-width:280px;flex:1">
               <span style="color:#9AA2A9;font-size:12.5px;font-weight:600">Поиск</span>
-              <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Поиск по названию или id ограничения" style="border:none;outline:none;background:transparent;flex:1;font-size:12.5px">
+              <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Введите название ограничения" style="border:none;outline:none;background:transparent;flex:1;font-size:12.5px">
               <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
                 <button onClick="{{ clearQuery }}" style="border:none;background:#EEF2F4;color:#5A6068;width:20px;height:20px;border-radius:50%;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
               </sc-if>
@@ -323,20 +344,6 @@
                           </div>
                           <button onClick="{{ o.remove }}" title="Удалить объект" style="border:1px solid #E2EAEC;background:#fff;color:#B3261E;height:38px;margin-top:22px;border-radius:9px;font-size:12px">✕</button>
                         </div>
-                        <sc-if value="{{ o.hasSelectExtra }}" hint-placeholder-val="{{ false }}">
-                          <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
-                            <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">{{ o.extraLabel }}</label>
-                            <div style="display:flex;flex-wrap:wrap;gap:8px">
-                              <sc-for list="{{ o.extraOpts }}" as="e" hint-placeholder-count="3">
-                                <label style="{{ e.style }}">
-                                  <input type="checkbox" checked="{{ e.checked }}" onChange="{{ e.toggle }}" style="width:16px;height:16px;accent-color:#1AB7C9">
-                                  <span style="font-size:12.5px;font-weight:600">{{ e.label }}</span>
-                                </label>
-                              </sc-for>
-                            </div>
-                            <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.extraHint }}</div>
-                          </div>
-                        </sc-if>
                         <sc-if value="{{ o.hasSpec }}" hint-placeholder-val="{{ false }}">
                           <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
                             <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">Специализация</label>
@@ -554,7 +561,7 @@
                     <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ true }}">
                       <div style="display:flex;gap:8px">
                         <input value="{{ c.value }}" onChange="{{ c.setValue }}" style="flex:1;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
-                        <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:92px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
+                        <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:112px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
                           <sc-for list="{{ c.unitOpts }}" as="u" hint-placeholder-count="2">
                             <option value="{{ u }}">{{ u }}</option>
                           </sc-for>
@@ -650,7 +657,7 @@
 
   <!-- ================= ВИЗАРД ================= -->
   <sc-if value="{{ wizardOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;inset:0;background:rgba(16,32,36,.5);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto">
+    <div style="{{ wizardOverlayStyle }}">
       <div style="width:760px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(20,60,70,.24);animation:fadeIn .16s ease-out;display:flex;flex-direction:column;max-height:86vh">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 12px;border-bottom:1px solid #E2EAEC">
           <div>
@@ -703,20 +710,6 @@
                     </div>
                     <button onClick="{{ o.remove }}" title="Удалить объект" style="border:1px solid #E2EAEC;background:#fff;color:#B3261E;height:38px;margin-top:22px;border-radius:9px;font-size:12px">✕</button>
                   </div>
-                  <sc-if value="{{ o.hasSelectExtra }}" hint-placeholder-val="{{ false }}">
-                    <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
-                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">{{ o.extraLabel }}</label>
-                      <div style="display:flex;flex-wrap:wrap;gap:8px">
-                        <sc-for list="{{ o.extraOpts }}" as="e" hint-placeholder-count="3">
-                          <label style="{{ e.style }}">
-                            <input type="checkbox" checked="{{ e.checked }}" onChange="{{ e.toggle }}" style="width:16px;height:16px;accent-color:#1AB7C9">
-                            <span style="font-size:12.5px;font-weight:600">{{ e.label }}</span>
-                          </label>
-                        </sc-for>
-                      </div>
-                      <div style="font-size:11px;color:#8A9099;margin-top:6px">{{ o.extraHint }}</div>
-                    </div>
-                  </sc-if>
                   <sc-if value="{{ o.hasSpec }}" hint-placeholder-val="{{ false }}">
                     <div style="margin-top:12px;border-top:1px solid #F0F5F6;padding-top:12px">
                       <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:6px">Специализация</label>
@@ -861,7 +854,7 @@
                           <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ true }}">
                             <div style="display:flex;gap:8px">
                               <input value="{{ c.value }}" onChange="{{ c.setValue }}" style="flex:1;min-width:0;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px;font-size:12.5px">
-                              <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:88px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
+                              <select value="{{ c.unit }}" onChange="{{ c.setUnit }}" style="width:108px;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 8px;font-size:12.5px;background:#fff">
                                 <sc-for list="{{ c.unitOpts }}" as="u" hint-placeholder-count="2">
                                   <option value="{{ u }}">{{ u }}</option>
                                 </sc-for>
@@ -1000,7 +993,7 @@
 
   <!-- ================= МОДАЛКА КОНФЛИКТА ================= -->
   <sc-if value="{{ conflictOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;inset:0;background:rgba(16,32,36,.55);z-index:70;display:flex;align-items:center;justify-content:center;padding:24px">
+    <div style="{{ conflictOverlayStyle }}">
       <div style="width:620px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(20,60,70,.28);animation:fadeIn .16s ease-out;overflow:hidden">
         <div style="padding:20px 22px 0">
           <div style="display:flex;align-items:flex-start;gap:12px">
@@ -1054,7 +1047,7 @@
 
   <!-- ================= ПОДТВЕРЖДЕНИЯ ================= -->
   <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;inset:0;background:rgba(16,32,36,.5);z-index:80;display:flex;align-items:center;justify-content:center;padding:24px">
+    <div style="{{ confirmOverlayStyle }}">
       <div style="width:460px;max-width:100%;background:#fff;border-radius:16px;padding:22px;box-shadow:0 24px 64px rgba(20,60,70,.28);animation:fadeIn .16s ease-out">
         <div style="font-size:16px;font-weight:800">{{ confirmTitle }}</div>
         <div style="font-size:12.5px;color:#5A6068;margin-top:8px;line-height:1.55">{{ confirmBody }}</div>
@@ -1067,7 +1060,7 @@
   </sc-if>
 
   <!-- ================= ТОСТЫ ================= -->
-  <div style="position:fixed;top:70px;right:20px;z-index:90;display:flex;flex-direction:column;gap:8px">
+  <div style="{{ toastLayerStyle }}">
     <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
       <div style="{{ t.style }}">
         <span style="font-size:12.5px;font-weight:600">{{ t.text }}</span>
@@ -1077,7 +1070,7 @@
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emptyAll&quot;,&quot;emptyFiltered&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'error'|'emptyAll'|'emptyFiltered'&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;readOnly&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Состояния&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emptyAll&quot;,&quot;emptyFiltered&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'error'|'emptyAll'|'emptyFiltered'&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;embedded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;initialAuthed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRoute&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;card&quot;,&quot;rules&quot;,&quot;ruleEditor&quot;,&quot;refObjects&quot;,&quot;refRestrictions&quot;,&quot;refSubjects&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRuleNew&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialEdit&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialWizard&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialStep&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConflict&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;DUPLICATE&quot;,&quot;MORE_SPECIFIC_EXISTS&quot;,&quot;OVERLAPPING&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConfirm&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;delete&quot;,&quot;closeWizard&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRulesDeleted&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialSuggest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialFilters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialDoctor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;existing&quot;,&quot;new&quot;],&quot;default&quot;:&quot;existing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleQuery&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialPregnancy&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;}}">
 class Component extends DCLogic {
   OT = {
     MED_OFFICE: ['Медицинский офис', 'МО', 'Все медофисы'],
@@ -1124,26 +1117,26 @@ class Component extends DCLogic {
   CABINET_KINDS = ['Фактический', 'Виртуальный'];
   REGIONS = ['РФ', 'КЗ', 'РБ', 'Киргизия', 'Дальний восток', 'Сибирь', 'Урал', 'Центр', 'Северо-Запад', 'Северо-Кавказ', 'Юг', 'Крым', 'Приволжье', 'Москва'];
   SEARCH_LABEL = {
-    MED_OFFICE: 'Код или название медофиса',
+    MED_OFFICE: 'Код медофиса',
     DOCTOR: 'ФИО врача',
-    PRODUCT: 'Название или артикул продукта',    CABINET: 'Название или номер кабинета',
+    PRODUCT: 'Артикул продукта',    CABINET: 'Номер кабинета',
     DOCTOR_SPECIALITY: 'Название специальности',
     AGGLOMERATION: 'Название агломерации',
     COUNTRY: 'Название страны',
     CITY: 'Название города'
   };
   SEARCH_PLACEHOLDER = {
-    MED_OFFICE: 'Например: MSK-001 или Москва-1',
-    DOCTOR: 'Например: Иванов И.И.',
-    PRODUCT: 'Например: 21.1.1 или Общий анализ крови',
-    CABINET: 'Например: Каб. 3',
+    MED_OFFICE: 'Введите код медофиса',
+    DOCTOR: 'Например: Иванов Иван',
+    PRODUCT: 'Введите артикул продукта',
+    CABINET: 'Введите номер кабинета',
     DOCTOR_SPECIALITY: 'Например: Гинеколог',
     AGGLOMERATION: 'Например: Москва и МО',
     COUNTRY: 'Например: Россия',
     CITY: 'Например: Санкт-Петербург'
   };
 
-  CARD_EXTRA = { MED_OFFICE: 'СМО', CABINET: 'Фактический', DOCTOR: '', PRODUCT: '' };
+  CARD_EXTRA = { MED_OFFICE: '', CABINET: '', DOCTOR: '', PRODUCT: '' };
   newScopeRow(type) {
     const t = type || 'PRODUCT';
     return { id: Date.now() + Math.floor(Math.random() * 1000), type: t, value: '', all: false, account: '', extra: this.defaultExtra(t), region: this.defaultRegion(t) };
@@ -1151,11 +1144,11 @@ class Component extends DCLogic {
   defaultExtra(t) { return t === 'MED_OFFICE' || t === 'CABINET' ? [] : []; }
   defaultRegion(t) { return t === 'PRODUCT' ? this.REGIONS[0] : ''; }
   SUGGEST = {
-    MED_OFFICE: ['MSK-001 — Москва-1, ул. Ленинская 12', 'MSK-014 — Москва-14, Кутузовский пр-т 5', 'SPB-004 — Санкт-Петербург-4', 'SPB-021 — Санкт-Петербург-21', 'EKB-002 — Екатеринбург-2', 'KZN-007 — Казань-7'],
+    MED_OFFICE: ['КОЗЛОВ-К', 'ИВАН-ЗЕЛ-ЮН', 'РОМА-СПБ-НО'],
     CABINET: ['Каб. 3 — процедурный', 'Каб. 5 — УЗИ', 'Каб. 12 — Функциональная диагностика', 'Каб. 14 — Забор крови', 'Телемедицина — виртуальный кабинет'],
     DOCTOR: ['Иванов И.И. — i.ivanov', 'Петрова А.С. — a.petrova', 'Сидоров М.В. — m.sidorov', 'Кузнецова О.Н. — o.kuznetsova', 'Смирнов Д.А. — d.smirnov'],
     DOCTOR_SPECIALITY: ['Гинеколог', 'Терапевт', 'Кардиолог', 'Эндокринолог', 'Уролог', 'Педиатр', 'Врач УЗИ'],
-    PRODUCT: ['21.1.1 — Общий анализ крови', '08.1.2 — Витамин D, 25-OH', '04.2.7 — Гормоны щитовидной железы', '55.0.3 — Холтер ЭКГ, 24 часа', '90.1.4 — Генетические тесты', '12.3.1 — УЗИ брюшной полости'],
+    PRODUCT: ['MRT36', 'KT36'],
     AGGLOMERATION: ['Москва и МО', 'Санкт-Петербург и ЛО', 'Екатеринбург', 'Новосибирск', 'Казань', 'Ростов-на-Дону'],
     COUNTRY: ['Россия', 'Казахстан', 'Беларусь', 'Киргизия', 'Армения'],
     CITY: ['Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Казань', 'Нижний Новгород', 'Сочи']
@@ -1200,14 +1193,12 @@ class Component extends DCLogic {
     const field = (bad, dis) => 'width:100%;border:none;box-shadow:inset 0 0 0 1px ' + (bad ? '#DB0000' : '#DCE6E8') + ';border-radius:9px;padding:10px 11px;font-size:12.5px;background:' + (dis ? '#F4F6F7' : '#fff') + ';color:' + (dis ? '#9AA2A9' : '#1A1A1A');
     const sel = dis => 'width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 11px 10px 14px;font-size:12.5px;background:' + (dis ? '#F4F6F7' : '#fff') + ';color:' + (dis ? '#9AA2A9' : '#1A1A1A');
     const hasAccount = o.type === 'DOCTOR';
-    const hasOwner = o.type === 'MED_OFFICE';
-    const hasCabKind = o.type === 'CABINET';
-    const hasRegion = o.type === 'PRODUCT';
+    const hasOwner = false, hasCabKind = false, hasRegion = false;
     return {
       type: o.type, value: locked ? '' : o.value, all: o.all, locked,
       account: locked ? '' : (o.account || ''), extra: this.extraList(o), region: o.region || '',
       searchLabel: this.SEARCH_LABEL[o.type] || 'Объект',
-      hint: o.type === 'DOCTOR' ? 'Врача можно найти по ФИО или по учётной записи' : '',
+      hint: o.type === 'DOCTOR' ? 'Введите сначала Фамилию, потом Имя врача' : '',
       hasHint: o.type === 'DOCTOR',
       allLabel: this.OT[o.type][2] + ' — без выбора конкретного',
       placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…'),
@@ -1267,24 +1258,26 @@ class Component extends DCLogic {
   }
 
   state = {
-    route: 'list', query: '', fType: 'all', fParam: 'all', fSubject: 'all', fLimit: '20',
-    rulesShowDeleted: false, reValidFrom: '', reValidTo: '',
-    curId: 'a1b2c3d4', cardTab: 'overview', editMode: false,
-    wizardOpen: false, step: 1,
+    route: this.props.initialRoute || 'list', query: '', fType: 'all', fParam: 'all', fSubject: 'all', fLimit: '20',
+    rulesShowDeleted: !!this.props.initialRulesDeleted, reValidFrom: '', reValidTo: '',
+    curId: 'a1b2c3d4', cardTab: 'overview', editMode: !!this.props.initialEdit,
+    wizardOpen: !!this.props.initialWizard, step: this.props.initialStep || 1,
     scopeRows: [
-      { id: 1, type: 'MED_OFFICE', value: 'Москва-1', all: false, account: '', extra: ['СМО'], region: '' },
+      { id: 1, type: 'MED_OFFICE', value: 'Москва-1', all: false, account: '', extra: [], region: '' },
       { id: 2, type: 'PRODUCT', value: '', all: true, account: '', extra: [], region: '' }
     ],
-    ruleMode: 'existing', ruleQuery: '', selectedRule: 'r1',
+    ruleMode: this.props.initialRuleMode || 'existing', ruleQuery: this.props.initialRuleQuery || '', selectedRule: 'r1',
     reName: '', reDesc: '',
     reConditions: [{ id: 1, parameter: 'AGE', operator: 'gte', value: '18', unit: 'год', weekFrom: '', weekTo: '', text: 'Услуга доступна с 18 лет' }],
     subjects: { PATIENT: true, OPERATOR_CC: true, DOCTOR: false, ADMIN_ARMPS: false },
     applyFrom: '', comment: '',
     demoResponse: '201',
-    conflict: null, forceAck: false,
-    confirm: null, toasts: [],
+    conflict: this.props.initialConflict || null, forceAck: false,
+    confirm: this.props.initialConfirm || null, toasts: [],
     ruleEditorId: null,
-    authed: false, rememberMe: true, cardScopeRows: [], suggestOpen: null, submitting: false
+    authed: !!this.props.initialAuthed, rememberMe: true,
+    cardScopeRows: [],
+    suggestOpen: null, submitting: false
   };
 
   REFS = {
@@ -1293,11 +1286,11 @@ class Component extends DCLogic {
       columns: ['Код', 'Название', 'Поиск и дополнительные параметры'],
       cols: 'minmax(0,1fr) minmax(0,1fr) minmax(0,2.2fr)',
       rows: [
-        ['MED_OFFICE', 'Медицинский офис', 'Код или название + форма собственности (СМО, ФМО-ЛФР, ФМО-МФР)'],
-        ['CABINET', 'Кабинет', 'Название + тип: фактический или виртуальный'],
-        ['DOCTOR', 'Врач', 'ФИО или учётная запись + специализация'],
+        ['MED_OFFICE', 'Медицинский офис', 'Код медофиса'],
+        ['CABINET', 'Кабинет', 'Номер кабинета'],
+        ['DOCTOR', 'Врач', 'Фамилия, затем имя + специализация'],
         ['DOCTOR_SPECIALITY', 'Специальность врача', 'Название'],
-        ['PRODUCT', 'Продукт', 'Название или артикул + страна присутствия и агломерация'],
+        ['PRODUCT', 'Продукт', 'Артикул'],
         ['AGGLOMERATION', 'Агломерация', 'Название'],
         ['COUNTRY', 'Страна', 'Название'],
         ['CITY', 'Город', 'Название']
@@ -1347,7 +1340,12 @@ class Component extends DCLogic {
 
   // ---------- helpers ----------
   ds() { return this.props.dataState || 'normal'; }
-  ro() { return !!this.props.readOnly; }
+  ro() { return false; }
+  emb() { return !!this.props.embedded; }
+  overlay(bg, z, align, pad, scroll) {
+    const e = this.emb();
+    return 'position:' + (e ? 'absolute' : 'fixed') + ';inset:0;background:' + bg + ';z-index:' + z + ';display:flex;align-items:' + align + ';justify-content:center;padding:' + pad + (scroll ? ';overflow:auto' : '');
+  }
   opSym(c) { const f = this.OPS.find(o => o[0] === c); return f ? f[1] : '='; }
   badge(p, opCode, val) {
     const parts = String(val).trim().split(' ');
@@ -1449,7 +1447,32 @@ class Component extends DCLogic {
   stepError(n) { return n === 1 ? this.scopeValid() : n === 2 ? this.step2Valid() : n === 3 ? this.step3Valid() : ''; }
   curRule() { return this.RULES.find(r => r.id === this.state.selectedRule) || this.RULES[0]; }
   cur() { return this.DATA.find(d => d.id === this.state.curId) || this.DATA[0]; }
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.initialFilters) this.setState({ fType: 'MED_OFFICE', fParam: 'AGE', fSubject: 'PATIENT', query: 'Москва' });
+    if (this.props.initialSuggest) this.setState({ suggestOpen: 'wiz:1' });
+    if (this.props.initialPregnancy) {
+      this.setState({ ruleMode: 'new', reName: 'Приём по неделям беременности', reDesc: 'Скрининг второго триместра',
+        reConditions: [{ id: 1, parameter: 'PREGNANCY', operator: 'between', value: '', unit: '—', weekFrom: '12', weekTo: '28', text: 'Приём ведётся с 12 по 28 неделю беременности' }] });
+    }
+    if (this.props.initialDoctor) {
+      this.setState({ scopeRows: [{ id: 1, type: 'DOCTOR', value: 'Кузнецова О.Н. — o.kuznetsova', all: false, account: '', spec: 'Эндокринолог', extra: [], region: '' }] });
+    }
+    if (this.props.initialEdit) {
+      const cur = this.DATA.find(d => d.id === this.state.curId) || this.DATA[0];
+      this.setState({ cardScopeRows: cur.scope.map((o, i) => ({ id: i + 1, type: o[0], value: o[1] === 'Все' ? '' : o[1], all: o[1] === 'Все', account: '', spec: '', extra: [], region: '' })) });
+    }
+    if (this.props.initialRoute === 'ruleEditor' && !this.props.initialRuleNew) {
+      const r = this.RULES.find(x => x.id === this.props.initialRuleId) || this.RULES[2];
+      this.setState({
+        ruleEditorId: r.id, reName: r.name, reDesc: r.desc, reValidFrom: r.validFrom, reValidTo: r.validTo,
+        reConditions: r.conds.map((c, i) => {
+          const parts = String(c[2]).split(' ');
+          const weeks = c[0] === 'PREGNANCY' ? parts[0].split('–') : null;
+          return { id: i + 1, parameter: c[0], operator: c[1], value: weeks ? '' : parts[0], unit: weeks ? '—' : (parts[1] || '—'), weekFrom: weeks ? weeks[0] : '', weekTo: weeks ? weeks[1] : '', text: c[3] };
+        })
+      });
+    }
+  }
   navGo(route) { this.setState({ route, editMode: false, cardTab: 'overview', suggestOpen: null }); }
   patchCond(id, patch) {
     this.setState(s => ({ reConditions: s.reConditions.map(c => c.id === id ? Object.assign({}, c, patch) : c) }));
@@ -1627,7 +1650,7 @@ class Component extends DCLogic {
 
     // rules table
     const rulesCols = 'minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)';
-    const rules = this.RULES.filter(r => st.rulesShowDeleted || !r.deleted).map(r => ({
+    const rules = (ds === 'emptyAll' ? [] : this.RULES.filter(r => st.rulesShowDeleted || !r.deleted)).map(r => ({
       name: r.name, desc: r.desc, updated: this.fmtDateTime(r.updated), validity: validityOf(r), isDeleted: r.deleted,
       badges: r.conds.map(c => { const b = this.badge(c[0], c[1], c[2]); return { label: b.label, style: b.style }; }),
       rowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center;opacity:' + (r.deleted ? '.6' : '1'),
@@ -1645,7 +1668,11 @@ class Component extends DCLogic {
     const plain = 'min-width:0;overflow-wrap:anywhere;font-size:12.5px;color:#3E464D;line-height:1.45';
 
     return {
-      readOnly: ro, canEdit: !ro,
+      readOnly: false, canEdit: true,
+      wizardOverlayStyle: this.overlay('rgba(16,32,36,.5)', 60, 'flex-start', '40px 16px', true),
+      conflictOverlayStyle: this.overlay('rgba(16,32,36,.55)', 70, 'center', '24px'),
+      confirmOverlayStyle: this.overlay('rgba(16,32,36,.5)', 80, 'center', '24px'),
+      toastLayerStyle: 'position:' + (this.emb() ? 'absolute' : 'fixed') + ';top:70px;right:20px;z-index:90;display:flex;flex-direction:column;gap:8px',
       authed: st.authed, notAuthed: !st.authed,
       rememberMe: st.rememberMe,
       toggleRemember: () => this.setState(s => ({ rememberMe: !s.rememberMe })),
