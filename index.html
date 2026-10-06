@@ -1207,7 +1207,7 @@ class Component extends DCLogic {
       hasAccount: o.type === 'DOCTOR', hasRegion: false,
       hasSelectExtra: hasOwner || hasCabKind || hasRegion,
       hasExtra: hasAccount || hasOwner || hasCabKind || hasRegion,
-      hasSpec: o.type === 'DOCTOR' && !locked && !!(o.value || '').trim(),
+      hasSpec: false,
       extraLabel: hasOwner ? 'Форма собственности' : hasRegion ? 'Страна присутствия и агломерация' : 'Тип кабинета',
       extraHint: (() => {
         const sel2 = this.extraList(o);
@@ -1288,7 +1288,7 @@ class Component extends DCLogic {
       rows: [
         ['MED_OFFICE', 'Медицинский офис', 'Код медофиса'],
         ['CABINET', 'Кабинет', 'Номер кабинета'],
-        ['DOCTOR', 'Врач', 'Фамилия, затем имя + специализация'],
+        ['DOCTOR', 'Врач', 'Фамилия, затем имя'],
         ['DOCTOR_SPECIALITY', 'Специальность врача', 'Название'],
         ['PRODUCT', 'Продукт', 'Артикул'],
         ['AGGLOMERATION', 'Агломерация', 'Название'],
