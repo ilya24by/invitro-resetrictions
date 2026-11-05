@@ -181,27 +181,25 @@
           </sc-if>
 
           <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;overflow:hidden">
-            <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px 44px;gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099">
+            <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px;gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099">
               <div>Название</div>
               <div>Область применения</div>
               <div>Правило</div>
               <div>Ограничение</div>
               <div>Субъект</div>
               <div>Статус</div>
-              <div></div>
             </div>
 
             <sc-if value="{{ showSkeleton }}" hint-placeholder-val="{{ false }}">
               <div>
                 <sc-for list="{{ skeleton }}" as="s" hint-placeholder-count="5">
-                  <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px 44px;gap:16px;padding:18px;border-bottom:1px solid #F0F5F6;animation:sk 1.4s ease-in-out infinite">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px;gap:16px;padding:18px;border-bottom:1px solid #F0F5F6;animation:sk 1.4s ease-in-out infinite">
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:20px;background:#EEF2F4;border-radius:999px"></div>
-                    <div></div>
                   </div>
                 </sc-for>
               </div>
@@ -239,9 +237,6 @@
                     <div style="font-size:12.5px;color:#3E464D" title="{{ r.subjectsFull }}">{{ r.subjects }}</div>
                     <div>
                       <span title="{{ r.statusTitle }}" style="{{ r.statusStyle }}">{{ r.statusLabel }}</span>
-                    </div>
-                    <div style="display:flex;justify-content:flex-end;align-items:flex-start">
-                      <button onClick="{{ r.menu }}" title="Открыть карточку" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;width:28px;height:28px;border-radius:8px;font-size:13px;line-height:1">⋯</button>
                     </div>
                   </div>
                 </sc-for>
@@ -408,8 +403,7 @@
                       </div>
                     </sc-for>
                     <div style="display:flex;align-items:center;justify-content:space-between">
-                      <button onClick="{{ addCardScopeRow }}" style="border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px">+ Добавить объект</button>
-                      <div style="font-size:12px;color:#6D757C">{{ cardScopeCounter }}</div>
+                      <button onClick="{{ addCardScopeRow }}" disabled="{{ cardAddScopeDisabled }}" title="{{ cardAddScopeTitle }}" style="{{ cardAddScopeStyle }}">+ Добавить объект</button>
                     </div>
                   </div>
                 </sc-if>
@@ -536,13 +530,22 @@
               <button onClick="{{ newRule }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px">+ Создать правило</button>
             </sc-if>
           </div>
-          <label style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 13px;font-size:12.5px;font-weight:600;margin-bottom:14px;cursor:pointer">
-            <input type="checkbox" checked="{{ rulesShowDeleted }}" onChange="{{ toggleRulesDeleted }}" style="width:16px;height:16px;accent-color:#1AB7C9">
-            Показывать удалённые правила
-          </label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 12px;min-width:280px;flex:1">
+              <span style="color:#9AA2A9;font-size:12.5px;font-weight:600">Поиск</span>
+              <input value="{{ rulesQuery }}" onChange="{{ setRulesQuery }}" placeholder="Название, описание или условие правила" style="border:none;outline:none;background:transparent;flex:1;font-size:12.5px">
+              <sc-if value="{{ hasRulesQuery }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ clearRulesQuery }}" style="border:none;background:#EEF2F4;color:#5A6068;width:20px;height:20px;border-radius:50%;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
+              </sc-if>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #E2EAEC;border-radius:10px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer">
+              <input type="checkbox" checked="{{ rulesShowDeleted }}" onChange="{{ toggleRulesDeleted }}" style="width:16px;height:16px;accent-color:#1AB7C9">
+              Показывать удалённые правила
+            </label>
+          </div>
           <div style="background:#fff;border:1px solid #E2EAEC;border-radius:14px;overflow:hidden">
             <div style="{{ rulesHeadStyle }}">
-              <div>Название</div><div>Описание</div><div>Условия</div><div>Срок действия</div><div>Обновлено</div>
+              <div>Название</div><div>Описание</div><div>Условия</div><div>Обновлено</div>
             </div>
             <sc-if value="{{ rulesSkeleton }}" hint-placeholder-val="{{ false }}">
               <div>
@@ -551,7 +554,6 @@
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:20px;background:#EEF2F4;border-radius:6px"></div>
-                    <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                     <div style="height:14px;background:#EEF2F4;border-radius:4px"></div>
                   </div>
                 </sc-for>
@@ -564,7 +566,9 @@
                 <div>
                   <div style="font-size:13px;font-weight:700">{{ r.name }}</div>
                   <sc-if value="{{ r.isDeleted }}" hint-placeholder-val="{{ false }}">
-                    <span style="display:inline-flex;margin-top:4px;background:#F4F6F7;color:#6D757C;border:1px solid #DCE3E5;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700">Удалено</span>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                      <span style="display:inline-flex;background:#F4F6F7;color:#6D757C;border:1px solid #DCE3E5;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700">Удалено</span>
+                    </div>
                   </sc-if>
                 </div>
                 <div style="font-size:12.5px;color:#6D757C;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.desc }}</div>
@@ -573,7 +577,6 @@
                     <span style="{{ b.style }}">{{ b.label }}</span>
                   </sc-for>
                 </div>
-                <div style="font-size:12px;color:#3E464D">{{ r.validity }}</div>
                 <div style="font-size:12px;color:#6D757C">{{ r.updated }}</div>
               </div>
                 </sc-for>
@@ -583,6 +586,9 @@
               <div style="padding:52px 24px;text-align:center">
                 <div style="font-size:15px;font-weight:700">{{ rulesEmptyTitle }}</div>
                 <div style="font-size:12.5px;color:#6D757C;margin:6px 0 16px">{{ rulesEmptyText }}</div>
+                <sc-if value="{{ rulesSearchMiss }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ clearRulesQuery }}" style="border:1px solid #B8CACE;background:#fff;color:#1A1A1A;font-weight:700;font-size:12.5px;padding:10px 16px;border-radius:9px;margin-right:8px">Сбросить поиск</button>
+                </sc-if>
                 <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}">
                   <button onClick="{{ newRule }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px">Создать правило</button>
                 </sc-if>
@@ -603,6 +609,12 @@
         <div style="max-width:900px">
           <button onClick="{{ goRules }}" style="border:none;background:transparent;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:0;margin-bottom:12px">← Назад к правилам</button>
           <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;letter-spacing:-.4px">{{ ruleEditorTitle }}</h1>
+          <sc-if value="{{ ruleEditorDeleted }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#F4F6F7;border:1px solid #DCE3E5;border-radius:12px;padding:12px 16px;margin-bottom:14px">
+              <div style="font-size:12.5px;color:#3E464D"><span style="font-weight:700">Правило удалено.</span> Его нельзя выбрать в новых ограничениях, пока оно не восстановлено.</div>
+              <button onClick="{{ restoreEditorRule }}" style="border:none;background:#1AB7C9;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;flex-shrink:0">Восстановить</button>
+            </div>
+          </sc-if>
           <sc-if value="{{ ruleReuseWarning }}" hint-placeholder-val="{{ true }}">
             <div style="background:#FFF7E6;border:1px solid #F5DFA8;border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:12.5px;color:#7A5200">
               <div style="font-weight:700">⚠ Изменения заменяют правило целиком</div>
@@ -617,17 +629,6 @@
             <div>
               <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Описание</label>
               <textarea value="{{ reDesc }}" onChange="{{ setReDesc }}" rows="2" placeholder="Кратко, для чего это правило" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:11px 13px;font-size:13px;resize:vertical"></textarea>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Действует с</label>
-                <input type="date" value="{{ reValidFrom }}" onChange="{{ setReValidFrom }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
-              </div>
-              <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Действует по</label>
-                <input type="date" value="{{ reValidTo }}" onChange="{{ setReValidTo }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
-                <div style="font-size:11px;color:#8A9099;margin-top:5px">Пусто — без ограничения по сроку</div>
-              </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between">
               <div style="font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#8A9099">Условия</div>
@@ -780,6 +781,36 @@
 
           <!-- ШАГ 1 -->
           <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Название ограничения <span style="color:#B3261E">*</span></label>
+                <input value="{{ restrictionName }}" onChange="{{ setRestrictionName }}" placeholder="Например: Москва-1 — только взрослые" maxlength="120" style="{{ restrictionNameStyle }}">
+                <sc-if value="{{ restrictionNameError }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:6px">{{ restrictionNameError }}</div>
+                </sc-if>
+                <div style="font-size:11.5px;color:#8A9099;margin-top:5px">По названию ограничение ищут в списке. Должно быть уникальным.</div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Описание ограничения</label>
+                <textarea value="{{ comment }}" onChange="{{ setComment }}" rows="3" placeholder="Для чего создано это ограничение" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
+                <div style="font-size:11.5px;color:#8A9099;margin-top:5px">Видно в карточке ограничения — коротко, зачем оно создано.</div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Применить с</label>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <input type="date" value="{{ applyFrom }}" onChange="{{ setApplyFrom }}" style="border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
+                  <span style="{{ applyFromBadgeStyle }}">{{ applyFromLabel }}</span>
+                  <sc-if value="{{ hasApplyFrom }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ clearApplyFrom }}" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;border-radius:8px;font-size:11.5px;font-weight:600;padding:7px 10px">Сбросить</button>
+                  </sc-if>
+                </div>
+                <div style="font-size:11.5px;color:#8A9099;margin-top:6px">Оставьте «немедленно», чтобы ограничение начало действовать сразу.</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ШАГ 2 -->
+          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:14px">
               <sc-for list="{{ scopeRows }}" as="o" hint-placeholder-count="2">
                 <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
@@ -852,8 +883,7 @@
                 </div>
               </sc-for>
               <div style="display:flex;align-items:center;justify-content:space-between">
-                <button onClick="{{ addScopeRow }}" style="border:1px dashed #B8CACE;background:#fff;color:#0E8E9E;font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px">+ Добавить объект</button>
-                <div style="{{ scopeCounterStyle }}">{{ scopeCounter }}</div>
+                <button onClick="{{ addScopeRow }}" disabled="{{ addScopeDisabled }}" title="{{ addScopeTitle }}" style="{{ addScopeStyle }}">+ Добавить объект</button>
               </div>
               <div style="border-top:1px solid #F0F5F6;padding-top:14px">
                 <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099;margin-bottom:8px">Область применения</div>
@@ -872,8 +902,8 @@
             </div>
           </sc-if>
 
-          <!-- ШАГ 2 -->
-          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+          <!-- ШАГ 3 -->
+          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:14px">
               <div style="display:inline-flex;background:#EEF2F4;border-radius:10px;padding:3px;align-self:flex-start">
                 <button onClick="{{ modeExisting }}" style="{{ modeExistingStyle }}">Выбрать существующее</button>
@@ -888,7 +918,6 @@
                       <div onClick="{{ r.select }}" style="{{ r.style }}">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                           <div style="font-size:13px;font-weight:700">{{ r.name }}</div>
-                          <div style="font-size:11.5px;color:#8A9099">{{ r.validity }}</div>
                         </div>
                         <div style="font-size:12px;color:#6D757C;margin:3px 0 8px">{{ r.desc }}</div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -928,17 +957,6 @@
                   <div>
                     <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Описание</label>
                     <textarea value="{{ reDesc }}" onChange="{{ setReDesc }}" rows="2" placeholder="Необязательно" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
-                  </div>
-                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                    <div>
-                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Действует с</label>
-                      <input type="date" value="{{ reValidFrom }}" onChange="{{ setReValidFrom }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
-                    </div>
-                    <div>
-                      <label style="display:block;font-size:11.5px;font-weight:700;margin-bottom:5px">Действует по</label>
-                      <input type="date" value="{{ reValidTo }}" onChange="{{ setReValidTo }}" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
-                      <div style="font-size:11px;color:#8A9099;margin-top:5px">Пусто — без ограничения по сроку</div>
-                    </div>
                   </div>
                   <div style="display:flex;align-items:center;justify-content:space-between">
                     <div style="font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#8A9099">Условия</div>
@@ -1030,17 +1048,9 @@
             </div>
           </sc-if>
 
-          <!-- ШАГ 3 -->
-          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+          <!-- ШАГ 4 -->
+          <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:16px">
-              <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Название ограничения <span style="color:#B3261E">*</span></label>
-                <input value="{{ restrictionName }}" onChange="{{ setRestrictionName }}" placeholder="Например: Москва-1 — только взрослые" maxlength="120" style="{{ restrictionNameStyle }}">
-                <sc-if value="{{ restrictionNameError }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:6px">{{ restrictionNameError }}</div>
-                </sc-if>
-                <div style="font-size:11.5px;color:#8A9099;margin-top:5px">По названию ограничение ищут в списке. Должно быть уникальным.</div>
-              </div>
               <div>
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                   <div style="font-size:12px;font-weight:700">Субъект</div>
@@ -1058,27 +1068,11 @@
                   <div style="font-size:11.5px;color:#B3261E;font-weight:600;margin-top:8px">Выберите хотя бы одного получателя</div>
                 </sc-if>
               </div>
-              <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Применить с</label>
-                <div style="display:flex;align-items:center;gap:8px">
-                  <input type="date" value="{{ applyFrom }}" onChange="{{ setApplyFrom }}" style="border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px">
-                  <span style="{{ applyFromBadgeStyle }}">{{ applyFromLabel }}</span>
-                  <sc-if value="{{ hasApplyFrom }}" hint-placeholder-val="{{ false }}">
-                    <button onClick="{{ clearApplyFrom }}" style="border:1px solid #E2EAEC;background:#fff;color:#5A6068;border-radius:8px;font-size:11.5px;font-weight:600;padding:7px 10px">Сбросить</button>
-                  </sc-if>
-                </div>
-                <div style="font-size:11.5px;color:#8A9099;margin-top:6px">Оставьте «немедленно», чтобы ограничение начало действовать сразу.</div>
-              </div>
-              <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px">Описание ограничения</label>
-                <textarea value="{{ comment }}" onChange="{{ setComment }}" rows="3" placeholder="Для чего создано это ограничение" style="width:100%;border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:9px;padding:10px 12px;font-size:12.5px;resize:vertical"></textarea>
-                <div style="font-size:11.5px;color:#8A9099;margin-top:5px">Видно в карточке ограничения — коротко, зачем оно создано.</div>
-              </div>
             </div>
           </sc-if>
 
-          <!-- ШАГ 4 -->
-          <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+          <!-- ШАГ 5 -->
+          <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px">
               <sc-for list="{{ summary }}" as="s" hint-placeholder-count="5">
                 <div style="border:1px solid #E2EAEC;border-radius:12px;padding:14px;background:#FAFCFC">
@@ -1096,8 +1090,6 @@
                 <select value="{{ demoResponse }}" onChange="{{ setDemoResponse }}" style="border:none;box-shadow:inset 0 0 0 1px #DCE6E8;border-radius:8px;padding:8px 10px;font-size:12px;background:#fff">
                   <option value="201">Успешно создано</option>
                   <option value="DUPLICATE">Дубликат</option>
-                  <option value="MORE_SPECIFIC_EXISTS">Есть более специфичное</option>
-                  <option value="OVERLAPPING">Пересечение областей</option>
                 </select>
               </div>
             </div>
@@ -1196,7 +1188,7 @@
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emptyAll&quot;,&quot;emptyFiltered&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'error'|'emptyAll'|'emptyFiltered'&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;embedded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;initialAuthed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRoute&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;card&quot;,&quot;rules&quot;,&quot;ruleEditor&quot;,&quot;refObjects&quot;,&quot;refRestrictions&quot;,&quot;refSubjects&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRuleNew&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialEdit&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialWizard&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialStep&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConflict&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;DUPLICATE&quot;,&quot;MORE_SPECIFIC_EXISTS&quot;,&quot;OVERLAPPING&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConfirm&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;delete&quot;,&quot;closeWizard&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRulesDeleted&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialSuggest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialFilters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialDoctor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;existing&quot;,&quot;new&quot;],&quot;default&quot;:&quot;existing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleQuery&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialPregnancy&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emptyAll&quot;,&quot;emptyFiltered&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'error'|'emptyAll'|'emptyFiltered'&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;embedded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Состояния&quot;},&quot;initialAuthed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRoute&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;card&quot;,&quot;rules&quot;,&quot;ruleEditor&quot;,&quot;refObjects&quot;,&quot;refRestrictions&quot;,&quot;refSubjects&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRuleNew&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialEdit&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialWizard&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialStep&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConflict&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;DUPLICATE&quot;,&quot;MORE_SPECIFIC_EXISTS&quot;,&quot;OVERLAPPING&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialConfirm&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;delete&quot;,&quot;closeWizard&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialRulesDeleted&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Стартовое состояние&quot;},&quot;initialSuggest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialFilters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialDoctor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;existing&quot;,&quot;new&quot;],&quot;default&quot;:&quot;existing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialRuleQuery&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Интерактив&quot;},&quot;initialPregnancy&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Интерактив&quot;}}">
 class Component extends DCLogic {
   OT = {
     MED_OFFICE: ['Медицинский офис', 'МО', 'Все медофисы'],
@@ -1324,13 +1316,14 @@ class Component extends DCLogic {
     return ex.length ? base + ' · ' + ex.join(' · ') : base;
   }
   rowValues(o) { const v = (o.value || '').trim(); const it = (o.items || []).slice(0, 1); return it.length ? it : (v ? [v] : []); }
+  addBtnStyle(dis) { return 'border:1px dashed ' + (dis ? '#DCE3E5' : '#B8CACE') + ';background:' + (dis ? '#F4F6F7' : '#fff') + ';color:' + (dis ? '#B8C2C6' : '#0E8E9E') + ';font-weight:700;font-size:12.5px;padding:10px 14px;border-radius:9px;cursor:' + (dis ? 'not-allowed' : 'pointer'); }
   freeType(rows) { const used = rows.map(r => r.type); return Object.keys(this.OT).find(k => used.indexOf(k) < 0); }
   groupScope(scope) {
     const out = [];
     scope.forEach(s => {
       let r = out.find(x => x.type === s[0]);
       if (!r) { r = { id: out.length + 1, type: s[0], value: '', items: [], all: false, account: '', spec: '', extra: [], region: '' }; out.push(r); }
-      if (s[1] === 'Все') r.all = true; else if (!r.items.length) r.items.push(s[1]);
+      if (s[1] === 'Все') r.all = true; else if (!r.items.length) { r.items.push(s[1]); r.value = s[1]; }
     });
     return out;
   }
@@ -1341,7 +1334,7 @@ class Component extends DCLogic {
     const dup = rows.some((x, j) => j < i && x.type === o.type);
     const addItem = v => {
       v = (v || '').trim(); if (!v) return;
-      patch(o.id, { items: [v], value: '', f1: undefined, f2: undefined, fio: undefined, spec: '' });
+      patch(o.id, { items: [v], value: v, f1: undefined, f2: undefined, fio: undefined, spec: '' });
       this.setState({ suggestOpen: null });
     };
     const pendingVal = (o.value || '').trim();
@@ -1369,7 +1362,7 @@ class Component extends DCLogic {
     const fioDis = locked;
     return {
       typeOpts: Object.keys(this.OT).map(k => ({ value: k, label: this.OT[k][0], disabled: k !== o.type && rows.some(x => x.type === k) })),
-      hasItems: !locked && items.length > 0,
+      hasItems: false,
       items: locked ? [] : items.map(v => ({ label: v, remove: () => patch(o.id, { items: items.filter(x => x !== v) }) })),
       plusDisabled: locked || needOffice || !pendingVal,
       plusTitle: 'Добавить ещё одно значение',
@@ -1383,7 +1376,7 @@ class Component extends DCLogic {
         value: fioDis ? '' : fio[pi],
         disabled: fioDis,
         cellStyle: 'flex:1 1 0;min-width:0;display:flex;border-left:' + (pi ? '1px solid #DCE6E8' : 'none'),
-        set: e => { const nf = fio.slice(); nf[pi] = e.target.value; patch(o.id, { fio: nf, value: nf.map(x => x.trim()).filter(Boolean).join(' '), spec: '' }); this.setState({ suggestOpen: key }); },
+        set: e => { const nf = fio.slice(); nf[pi] = e.target.value; patch(o.id, { fio: nf, value: nf.map(x => x.trim()).filter(Boolean).join(' '), spec: '', items: [] }); this.setState({ suggestOpen: key }); },
         focus: () => this.setState({ suggestOpen: key }),
         blur: () => setTimeout(() => this.setState(st2 => st2.suggestOpen === key ? { suggestOpen: null } : {}), 160)
       })),
@@ -1394,14 +1387,14 @@ class Component extends DCLogic {
         pick: e => { e.preventDefault(); patch(o.id, { searchBy: mi }); }
       })) : [],
       field1: locked ? '' : (two ? (picked ? joinV(f1, f2) : (by === 1 ? f2 : f1)) : f1),
-      setField1: e => { const v = e.target.value; patch(o.id, two ? (by === 1 ? { f1: '', f2: v, value: v } : { f1: v, f2: '', value: v }) : { value: v, spec: '' }); this.setState({ suggestOpen: key }); },
+      setField1: e => { const v = e.target.value; patch(o.id, two ? (by === 1 ? { f1: '', f2: v, value: v, items: [] } : { f1: v, f2: '', value: v, items: [] }) : { value: v, spec: '', items: [] }); this.setState({ suggestOpen: key }); },
       type: o.type, value: locked ? '' : o.value, all: o.all, locked,
       account: locked ? '' : (o.account || ''), extra: this.extraList(o), region: o.region || '',
       searchLabel: two ? 'Искать по' : (this.SEARCH_LABEL[o.type] || 'Объект'),
       hint: o.type === 'DOCTOR' ? 'Достаточно фамилии — имя и отчество уточняют поиск' : '',
       hasHint: o.type === 'DOCTOR',
       allLabel: this.OT[o.type][2] + ' — без выбора конкретного',
-      placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : needOffice ? 'Сначала выберите медофис' : items.length ? 'Выбрано одно значение — начните вводить, чтобы заменить' : (two ? two[by][1] : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…')),
+      placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : needOffice ? 'Сначала выберите медофис' : (two ? two[by][1] : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…')),
       inputStyle: field(!!err && !needOffice, locked || needOffice),
       inputDisabled: locked || needOffice,
       isCabinet: isCab,
@@ -1473,19 +1466,19 @@ class Component extends DCLogic {
       setAccount: e => patch(o.id, { account: e.target.value }),
       setExtra: e => patch(o.id, { extra: e.target.value }),
       setRegion: e => patch(o.id, { region: e.target.value }),
-      toggleAll: () => patch(o.id, { all: !o.all, value: !o.all ? '' : o.value }),
+      toggleAll: () => patch(o.id, { all: !o.all, value: !o.all ? '' : ((o.items || [])[0] || o.value), f1: undefined, f2: undefined, fio: undefined }),
       remove: () => drop(o.id)
     };
   }
 
   state = {
     route: this.props.initialRoute || 'list', query: '', fType: 'all', fParam: 'all', fSubject: 'all', fLimit: '20',
-    rulesShowDeleted: !!this.props.initialRulesDeleted, reValidFrom: '', reValidTo: '',
+    rulesShowDeleted: !!this.props.initialRulesDeleted, rulesQuery: '', reValidFrom: '', reValidTo: '',
     curId: 'a1b2c3d4', cardTab: 'overview', editMode: !!this.props.initialEdit,
     wizardOpen: !!this.props.initialWizard, step: this.props.initialStep || 1,
     scopeRows: [
-      { id: 1, type: 'MED_OFFICE', value: '', items: ['КОЗЛОВ-К — Медофис Козлов, Казань'], all: false, account: '', extra: [], region: '' },
-      { id: 2, type: 'CABINET', office: '', value: '', items: ['УЗИ-1'], all: false, account: '', extra: [], region: '' },
+      { id: 1, type: 'MED_OFFICE', value: 'КОЗЛОВ-К — Медофис Козлов, Казань', items: ['КОЗЛОВ-К — Медофис Козлов, Казань'], all: false, account: '', extra: [], region: '' },
+      { id: 2, type: 'CABINET', office: '', value: 'УЗИ-1', items: ['УЗИ-1'], all: false, account: '', extra: [], region: '' },
       { id: 3, type: 'PRODUCT', value: '', all: true, account: '', extra: [], region: '' }
     ],
     ruleMode: this.props.initialRuleMode || 'existing', ruleQuery: this.props.initialRuleQuery || '', selectedRule: 'r1',
@@ -1550,7 +1543,8 @@ class Component extends DCLogic {
     { id: 'a1b2c3d4-5717-4562-b3fc-2c963f66afa6', name: 'Москва-1 — только взрослые', ruleId: 'e2c1f0aa-11d0-4c1f-9f0e-6a1d0b8a91c2', scope: [['MED_OFFICE', 'Москва-1', '9f1c7d20-4a3b-4f10-8c21-77e0f0c1a501'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 18+', desc: 'Услуги для совершеннолетних', conds: [['AGE', 'gte', '18 год', 'Услуга доступна с 18 лет', '{"value":18,"unit":"год"}']], subjects: ['PATIENT', 'OPERATOR_CC'], applyFrom: '', created: '2026-05-21T14:30:00+03:00', updated: '2026-08-20T11:04:00+03:00' },
     { id: 'b2c3d4e5-2f81-4a77-9d33-51b0c9a77c10', name: 'Иванов — гинекология только для женщин', ruleId: 'a7b8c9d0-2e31-4d55-9a12-3f4b5c6d7e88', scope: [['DOCTOR', 'Иванов И.И.', '1c8b4e33-9f21-4a7d-91b0-2c4d5e6f7a80'], ['DOCTOR_SPECIALITY', 'Гинеколог', '4d5e6f7a-8b90-4c12-9d34-5e6f7a8b9c01']], rule: 'Только женщины', desc: 'Приём женского профиля', conds: [['GENDER', 'eq', 'Женский', 'Услуга оказывается женщинам', '{"value":"Женский"}']], subjects: ['PATIENT'], applyFrom: '', created: '2026-06-02T09:12:00+03:00', updated: '2026-06-02T09:12:00+03:00' },
     { id: 'c3d4e5f6-6b12-4e09-8a55-9d0e1f2a3b44', name: 'Холтер ЭКГ для беременных, СПб-4', ruleId: 'c1d2e3f4-7a89-4b01-8c23-4d5e6f7a8b90', scope: [['MED_OFFICE', 'Санкт-Петербург-4', '7a8b9c0d-1e2f-4a3b-8c4d-5e6f7a8b9c0d'], ['PRODUCT', 'Холтер ЭКГ', '2b3c4d5e-6f70-4a81-9b92-0c1d2e3f4a55'], ['CITY', 'Санкт-Петербург', '8c9d0e1f-2a3b-4c5d-9e6f-7a8b9c0d1e2f'], ['CABINET', 'Каб. 3', '5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b']], rule: 'Беременность и вес', desc: 'Два условия одновременно', conds: [['PREGNANCY', 'between', '12–28 недель', 'Приём ведётся с 12 по 28 неделю беременности', '{"value":false}'], ['WEIGHT', 'lte', '130 кг', 'Ограничение по весу до 130 кг', '{"value":130,"unit":"кг"}']], subjects: ['PATIENT', 'OPERATOR_CC', 'DOCTOR'], applyFrom: '', created: '2026-06-11T17:45:00+03:00', updated: '2026-07-02T10:15:00+03:00' },
-    { id: 'd4e5f6a7-0c34-4b76-9e01-6a7b8c9d0e12', name: 'Москва и МО — с 16 лет', ruleId: 'f0a1b2c3-4d56-4e78-9a01-2b3c4d5e6f70', scope: [['AGGLOMERATION', 'Москва и МО', '3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 16+', desc: 'Плановый ввод с сентября', conds: [['AGE', 'gte', '16 год', 'Услуга доступна с 16 лет', '{"value":16,"unit":"год"}']], subjects: ['PATIENT'], applyFrom: '2026-09-01', created: '2026-07-18T11:02:00+03:00', updated: '2026-07-18T11:02:00+03:00' }
+    { id: 'd4e5f6a7-0c34-4b76-9e01-6a7b8c9d0e12', name: 'Москва и МО — с 16 лет', ruleId: 'f0a1b2c3-4d56-4e78-9a01-2b3c4d5e6f70', scope: [['AGGLOMERATION', 'Москва и МО', '3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 16+', desc: 'Плановый ввод с сентября', conds: [['AGE', 'gte', '16 год', 'Услуга доступна с 16 лет', '{"value":16,"unit":"год"}']], subjects: ['PATIENT'], applyFrom: '2026-09-01', created: '2026-07-18T11:02:00+03:00', updated: '2026-07-18T11:02:00+03:00' },
+    { id: 'e5f6a7b8-3d45-4c87-9f12-7b8c9d0e1f23', name: 'Казань-2 — только взрослые с 2027 года', ruleId: 'e2c1f0aa-11d0-4c1f-9f0e-6a1d0b8a91c2', scope: [['MED_OFFICE', 'Казань-2', '6b7c8d9e-0f1a-4b2c-8d3e-4f5a6b7c8d9e'], ['PRODUCT', 'Все', null]], rule: 'Возрастное ограничение 18+', desc: 'Вводится с нового года по решению региона', conds: [['AGE', 'gte', '18 год', 'Услуга доступна с 18 лет', '{"value":18,"unit":"год"}']], subjects: ['PATIENT', 'OPERATOR_CC'], applyFrom: '2027-01-15', created: '2026-11-03T16:20:00+03:00', updated: '2026-11-03T16:20:00+03:00' }
   ];
 
   RULES = [
@@ -1666,12 +1660,21 @@ class Component extends DCLogic {
     if (wc.length) return wc[0];
     return '';
   }
-  step3Valid() {
+  stepInfoValid() {
     if (!this.state.restrictionName.trim()) return 'Укажите название ограничения';
-    if (this.DATA.some(d => d.name.toLowerCase() === this.state.restrictionName.trim().toLowerCase())) return 'Ограничение с таким названием уже есть';
+    if (this.allData().some(d => d.name.toLowerCase() === this.state.restrictionName.trim().toLowerCase())) return 'Ограничение с таким названием уже есть';
+    return '';
+  }
+  step3Valid() {
     return Object.keys(this.state.subjects).some(k => this.state.subjects[k]) ? '' : 'Выберите хотя бы одного получателя';
   }
-  stepError(n) { return n === 1 ? this.scopeValid() : n === 2 ? this.step2Valid() : n === 3 ? this.step3Valid() : ''; }
+  stepError(n) { return n === 1 ? this.stepInfoValid() : n === 2 ? this.scopeValid() : n === 3 ? this.step2Valid() : n === 4 ? this.step3Valid() : ''; }
+  restoreRule(id) {
+    const r = this.RULES.find(x => x.id === id); if (!r || !r.deleted) return;
+    r.deleted = false; r.updated = new Date().toISOString();
+    this.setState(s => ({ rulesTick: (s.rulesTick || 0) + 1 }));
+    this.toast('Правило восстановлено: ' + r.name);
+  }
   curRule() { return this.RULES.find(r => r.id === this.state.selectedRule) || this.RULES[0]; }
   allData() { const ed = this.state.edits || {}; return this.DATA.map(d => ed[d.id] ? Object.assign({}, d, ed[d.id]) : d); }
   cur() { const all = this.allData(); return all.find(d => d.id === this.state.curId) || all[0]; }
@@ -1812,7 +1815,7 @@ class Component extends DCLogic {
         statusLabel: pill.label, statusStyle: pill.style,
         statusTitle: status === 'Scheduled' ? 'Вступает в силу ' + this.fmtDate(d.applyFrom) : 'Действует сейчас',
         name: d.name, idShort: d.id.slice(0, 8) + '…',
-        rowStyle: 'display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px 44px;gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:start',
+        rowStyle: 'display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 130px;gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:start',
         open: () => this.setState({ route: 'card', curId: d.id, cardTab: 'overview', editMode: false }),
         menu: e => { e.stopPropagation(); this.setState({ route: 'card', curId: d.id, cardTab: 'overview', editMode: false }); }
       };
@@ -1843,7 +1846,7 @@ class Component extends DCLogic {
       return { badge: b.label, badgeStyle: b.style, text: c[3] };
     });
     // wizard
-    const steps = ['Объекты', 'Правило', 'Субъекты', 'Подтверждение'].map((label, i) => {
+    const steps = ['Основное', 'Объекты', 'Правило', 'Субъекты', 'Подтверждение'].map((label, i) => {
       const n = i + 1, done = n < st.step, active = n === st.step;
       return {
         label, mark: done ? '✓' : String(n),
@@ -1873,17 +1876,17 @@ class Component extends DCLogic {
 
     const applyLabel = st.applyFrom ? 'Запланировано' : 'немедленно';
     const summary = [
-      { label: 'Название ограничения', step: 3, lines: [st.restrictionName.trim() || '—'] },
-      { label: 'Область применения', step: 1, lines: st.scopeRows.map(o => this.scopeChipLabel(o)).concat([st.scopeRows.length > 1 ? '↳ все объекты должны совпасть одновременно (И)' : '']).filter(Boolean) },
-      { label: 'Правило', step: 2, lines: [st.ruleMode === 'existing' ? selRule.name : (st.reName || 'Новое правило'), st.ruleMode === 'existing' ? selRule.desc : st.reDesc].filter(Boolean) },
-      { label: 'Условия', step: 2, lines: (st.ruleMode === 'existing' ? selRule.conds.map(c => this.badge(c[0], c[1], c[2]).label + ' · «' + c[3] + '»') : st.reConditions.map(c => this.badge(c.parameter, c.operator, this.condValueLabel(c)).label + ' · «' + (c.text || '—') + '»')) },
-      { label: 'Субъект', step: 3, lines: [Object.keys(st.subjects).filter(k => st.subjects[k]).map(k => this.SUBJ[k]).join(', ') || '—'] },
-      { label: 'Применить с и описание', step: 3, lines: [st.applyFrom ? this.fmtDate(st.applyFrom) : 'Сразу после создания', st.comment ? 'Описание: ' + st.comment : ''].filter(Boolean) }
+      { label: 'Название ограничения', step: 1, lines: [st.restrictionName.trim() || '—'] },
+      { label: 'Область применения', step: 2, lines: st.scopeRows.map(o => this.scopeChipLabel(o)).concat([st.scopeRows.length > 1 ? '↳ все объекты должны совпасть одновременно (И)' : '']).filter(Boolean) },
+      { label: 'Правило', step: 3, lines: [st.ruleMode === 'existing' ? selRule.name : (st.reName || 'Новое правило'), st.ruleMode === 'existing' ? selRule.desc : st.reDesc].filter(Boolean) },
+      { label: 'Условия', step: 3, lines: (st.ruleMode === 'existing' ? selRule.conds.map(c => this.badge(c[0], c[1], c[2]).label + ' · «' + c[3] + '»') : st.reConditions.map(c => this.badge(c.parameter, c.operator, this.condValueLabel(c)).label + ' · «' + (c.text || '—') + '»')) },
+      { label: 'Субъект', step: 4, lines: [Object.keys(st.subjects).filter(k => st.subjects[k]).map(k => this.SUBJ[k]).join(', ') || '—'] },
+      { label: 'Применить с и описание', step: 1, lines: [st.applyFrom ? this.fmtDate(st.applyFrom) : 'Сразу после создания', st.comment ? 'Описание: ' + st.comment : ''].filter(Boolean) }
     ].map(s => Object.assign(s, { edit: () => this.setState({ step: s.step }) }));
 
     const stepErr = this.stepError(st.step);
-    const nextLabel = st.step === 4 ? 'Создать ✓' : 'Далее →';
-    const nextStyle = 'border:none;background:' + (stepErr ? '#C9D6D9' : st.step === 4 ? '#146C3A' : '#1AB7C9') + ';color:#fff;font-weight:700;font-size:13px;padding:11px 20px;border-radius:10px;cursor:' + (stepErr ? 'not-allowed' : 'pointer');
+    const nextLabel = st.step === 5 ? 'Создать ✓' : 'Далее →';
+    const nextStyle = 'border:none;background:' + (stepErr ? '#C9D6D9' : st.step === 5 ? '#146C3A' : '#1AB7C9') + ';color:#fff;font-weight:700;font-size:13px;padding:11px 20px;border-radius:10px;cursor:' + (stepErr ? 'not-allowed' : 'pointer');
 
     // conflict
     const cf = st.conflict;
@@ -1892,11 +1895,15 @@ class Component extends DCLogic {
     const cfMessageUnused = 0;
 
     // rules table
-    const rulesCols = 'minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)';
-    const rules = (ds === 'emptyAll' ? [] : this.RULES.filter(r => st.rulesShowDeleted || !r.deleted)).map(r => ({
-      name: r.name, desc: r.desc, updated: this.fmtDateTime(r.updated), validity: validityOf(r), isDeleted: r.deleted,
+    const rulesCols = 'minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,1.3fr) minmax(0,1fr)';
+    const rq = (st.rulesQuery || '').trim().toLowerCase();
+    const ruleMatch = r => !rq || (r.id + ' ' + r.name + ' ' + r.desc + ' ' + r.conds.map(c => (this.PARAMS[c[0]] || c[0]) + ' ' + c[2] + ' ' + c[3]).join(' ')).toLowerCase().indexOf(rq) >= 0;
+    const rulesVisible = ds === 'emptyAll' ? [] : this.RULES.filter(r => st.rulesShowDeleted || !r.deleted);
+    const rulesSearchMiss = !!rq && rulesVisible.length > 0 && !rulesVisible.some(ruleMatch);
+    const rules = rulesVisible.filter(ruleMatch).map(r => ({
+      name: r.name, desc: r.desc, updated: this.fmtDateTime(r.updated), validity: validityOf(r), isDeleted: r.deleted, restore: e => { e.stopPropagation(); this.restoreRule(r.id); },
       badges: r.conds.map(c => { const b = this.badge(c[0], c[1], c[2]); return { label: b.label, style: b.style }; }),
-      rowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center;opacity:' + (r.deleted ? '.6' : '1'),
+      rowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center;background:' + (r.deleted ? '#FAFBFB' : '#fff') + ';color:' + (r.deleted ? '#8A9099' : 'inherit'),
       open: () => this.setState({ route: 'ruleEditor', ruleEditorId: r.id, reName: r.name, reDesc: r.desc, reValidFrom: r.validFrom, reValidTo: r.validTo, reConditions: r.conds.map((c, i) => {
         const parts = String(c[2]).split(' ');
         const weeks = c[0] === 'PREGNANCY' ? String(c[2]).split(' ')[0].split('–') : null;
@@ -1986,6 +1993,9 @@ class Component extends DCLogic {
         (id, p) => this.setState(s => ({ cardScopeRows: s.cardScopeRows.map(x => x.id === id ? Object.assign({}, x, p) : x) })),
         id => this.setState(s => ({ cardScopeRows: s.cardScopeRows.filter(x => x.id !== id) })), 'card'
       )),
+      cardAddScopeDisabled: !this.freeType(st.cardScopeRows),
+      cardAddScopeTitle: this.freeType(st.cardScopeRows) ? '' : 'Все типы объектов уже добавлены',
+      cardAddScopeStyle: this.addBtnStyle(!this.freeType(st.cardScopeRows)),
       cardScopeCounter: this.plur(st.cardScopeRows.length, 'object') + ' из 50',
       addCardScopeRow: () => { const t = this.freeType(st.cardScopeRows); if (!t) { this.toast('Все типы объектов уже добавлены', 'error'); return; } this.setState(s => ({ cardScopeRows: s.cardScopeRows.concat([Object.assign(this.newScopeRow(t), { items: [] })]) })); },
       editMode: st.editMode, editBtnLabel: st.editMode ? 'Режим редактирования' : 'Редактировать',
@@ -2048,8 +2058,11 @@ class Component extends DCLogic {
       rulesError: ds === 'error',
       rulesShowRows: ds !== 'loading' && ds !== 'error' && rules.length > 0,
       rulesEmpty: ds !== 'loading' && ds !== 'error' && rules.length === 0,
-      rulesEmptyTitle: ds === 'emptyAll' || this.RULES.length === 0 ? 'Пока нет ни одного правила' : 'Нет правил для показа',
-      rulesEmptyText: ds === 'emptyAll' || this.RULES.length === 0 ? 'Создайте первое правило — его можно будет переиспользовать в ограничениях.' : 'Все правила удалены — включите показ удалённых, чтобы их увидеть.',
+      rulesQuery: st.rulesQuery, hasRulesQuery: !!st.rulesQuery, rulesSearchMiss,
+      setRulesQuery: e => this.setState({ rulesQuery: e.target.value }),
+      clearRulesQuery: () => this.setState({ rulesQuery: '' }),
+      rulesEmptyTitle: rulesSearchMiss ? 'Ничего не найдено' : ds === 'emptyAll' || this.RULES.length === 0 ? 'Пока нет ни одного правила' : 'Нет правил для показа',
+      rulesEmptyText: rulesSearchMiss ? 'Попробуйте изменить запрос' + (st.rulesShowDeleted ? '.' : ' или включите показ удалённых правил.') : ds === 'emptyAll' || this.RULES.length === 0 ? 'Создайте первое правило — его можно будет переиспользовать в ограничениях.' : 'Все правила удалены — включите показ удалённых, чтобы их увидеть.',
       rulesSkeletonRowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:18px;border-bottom:1px solid #F0F5F6;animation:sk 1.4s ease-in-out infinite',
       rulesHeadStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:12px 18px;background:#FAFCFC;border-bottom:1px solid #E2EAEC;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#8A9099',
       rulesRowStyle: 'display:grid;grid-template-columns:' + rulesCols + ';gap:16px;padding:16px 18px;border-bottom:1px solid #F0F5F6;cursor:pointer;align-items:center',
@@ -2057,6 +2070,8 @@ class Component extends DCLogic {
       // rule editor
       ruleEditorTitle: st.ruleEditorId ? 'Правило: ' + st.reName : 'Новое правило',
       ruleReuseWarning: !!st.ruleEditorId,
+      ruleEditorDeleted: !!st.ruleEditorId && !!(this.RULES.find(r => r.id === st.ruleEditorId) || {}).deleted,
+      restoreEditorRule: () => this.restoreRule(st.ruleEditorId),
       reName: st.reName, reDesc: st.reDesc,
       reValidFrom: st.reValidFrom, reValidTo: st.reValidTo,
       setReName: e => this.setState({ reName: e.target.value }),
@@ -2079,10 +2094,13 @@ class Component extends DCLogic {
 
       // wizard
       wizardOpen: st.wizardOpen, steps,
-      stepTitle: ['Шаг 1: Выбор объектов', 'Шаг 2: Правило', 'Шаг 3: Субъект', 'Шаг 4: Подтверждение'][st.step - 1],
-      isStep1: st.step === 1, isStep2: st.step === 2, isStep3: st.step === 3, isStep4: st.step === 4,
+      stepTitle: ['Шаг 1: Основные сведения', 'Шаг 2: Выбор объектов', 'Шаг 3: Правило', 'Шаг 4: Субъект', 'Шаг 5: Подтверждение'][st.step - 1],
+      isStep1: st.step === 1, isStep2: st.step === 2, isStep3: st.step === 3, isStep4: st.step === 4, isStep5: st.step === 5,
       scopeRows, objectTypeOpts: Object.keys(this.OT).map(k => ({ value: k, label: this.OT[k][0] })),
       addScopeRow: () => { const t = this.freeType(st.scopeRows); if (!t) { this.toast('Все типы объектов уже добавлены', 'error'); return; } this.setState(s => ({ scopeRows: s.scopeRows.concat([Object.assign(this.newScopeRow(t), { items: [] })]) })); },
+      addScopeDisabled: !this.freeType(st.scopeRows),
+      addScopeTitle: this.freeType(st.scopeRows) ? '' : 'Все типы объектов уже добавлены',
+      addScopeStyle: this.addBtnStyle(!this.freeType(st.scopeRows)),
       scopeCounter: n + ' ' + this.plural(n, 'object') + ' из 50', scopeCounterStyle,
       scopeChips: st.scopeRows.map((o, i) => ({ label: this.scopeChipLabel(o), and: i < st.scopeRows.length - 1 ? 'И' : '' })),
       scopeEmpty: st.scopeRows.length === 0,
@@ -2119,7 +2137,7 @@ class Component extends DCLogic {
       nextLabel: st.submitting ? 'Создание…' : nextLabel,
       nextStyle: st.submitting ? nextStyle.replace('background:#146C3A', 'background:#5E8C72').replace('cursor:pointer', 'cursor:progress') : nextStyle,
       nextBlocked: !!stepErr, nextBlockedReason: stepErr,
-      nextStep: () => { if (st.submitting) return; if (stepErr) { this.toast(stepErr, 'error'); return; } if (st.step === 4) this.submit(false); else this.setState(s => ({ step: s.step + 1 })); },
+      nextStep: () => { if (st.submitting) return; if (stepErr) { this.toast(stepErr, 'error'); return; } if (st.step === 5) this.submit(false); else this.setState(s => ({ step: s.step + 1 })); },
       askCloseWizard: () => this.setState({ confirm: 'closeWizard' }),
 
       // conflict
@@ -2137,7 +2155,7 @@ class Component extends DCLogic {
       toggleForceAck: () => this.setState(s => ({ forceAck: !s.forceAck })),
       forceBtnStyle: 'border:none;background:' + (st.forceAck ? '#F39200' : '#EADFCB') + ';color:' + (st.forceAck ? '#fff' : '#B0A48D') + ';font-weight:700;font-size:12.5px;padding:10px 18px;border-radius:9px;cursor:' + (st.forceAck ? 'pointer' : 'not-allowed'),
       forceCreate: () => { if (!st.forceAck) { this.toast('Подтвердите пересечение галочкой', 'error'); return; } this.submit(true); },
-      backToEditing: () => this.setState({ conflict: null, step: 1 }),
+      backToEditing: () => this.setState({ conflict: null, step: 2 }),
       openExisting: () => this.setState({ conflict: null, wizardOpen: false, route: 'card', curId: this.DATA[0].id }),
 
       // confirm
