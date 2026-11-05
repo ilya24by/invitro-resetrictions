@@ -1323,14 +1323,14 @@ class Component extends DCLogic {
     const ex = this.scopeExtras(o);
     return ex.length ? base + ' · ' + ex.join(' · ') : base;
   }
-  rowValues(o) { const v = (o.value || '').trim(); return (o.items || []).concat(v && !(o.items || []).some(x => x.toLowerCase() === v.toLowerCase()) ? [v] : []); }
+  rowValues(o) { const v = (o.value || '').trim(); const it = (o.items || []).slice(0, 1); return it.length ? it : (v ? [v] : []); }
   freeType(rows) { const used = rows.map(r => r.type); return Object.keys(this.OT).find(k => used.indexOf(k) < 0); }
   groupScope(scope) {
     const out = [];
     scope.forEach(s => {
       let r = out.find(x => x.type === s[0]);
       if (!r) { r = { id: out.length + 1, type: s[0], value: '', items: [], all: false, account: '', spec: '', extra: [], region: '' }; out.push(r); }
-      if (s[1] === 'Все') r.all = true; else r.items.push(s[1]);
+      if (s[1] === 'Все') r.all = true; else if (!r.items.length) r.items.push(s[1]);
     });
     return out;
   }
@@ -1341,15 +1341,14 @@ class Component extends DCLogic {
     const dup = rows.some((x, j) => j < i && x.type === o.type);
     const addItem = v => {
       v = (v || '').trim(); if (!v) return;
-      if (items.some(x => x.toLowerCase() === v.toLowerCase())) { this.toast('Уже добавлен: ' + v, 'error'); return; }
-      patch(o.id, { items: items.concat([v]), value: '', f1: undefined, f2: undefined, fio: undefined, spec: '' });
+      patch(o.id, { items: [v], value: '', f1: undefined, f2: undefined, fio: undefined, spec: '' });
       this.setState({ suggestOpen: null });
     };
     const pendingVal = (o.value || '').trim();
     const isCab = o.type === 'CABINET';
     const office = (o.office || '').trim();
     const needOffice = false;
-    const err = dup ? 'Объект этого типа уже добавлен — добавьте значение в него' : (needOffice ? 'Сначала выберите медофис' : (!locked && !items.length && !pendingVal ? 'Укажите объект или отметьте «Все»' : ''));
+    const err = dup ? 'Объект этого типа уже добавлен — для каждого типа выбирается одно значение' : (needOffice ? 'Сначала выберите медофис' : (!locked && !items.length && !pendingVal ? 'Укажите объект или отметьте «Все»' : ''));
     const okey = key + ':office';
     const mkSug = (list, q, pick) => list.filter(s => { const t = (Array.isArray(s) ? s.join(' ') : s).toLowerCase(); return !q || t.indexOf(q) >= 0; }).slice(0, 6).map(s => {
       const label = Array.isArray(s) ? s[0] : s, sub = Array.isArray(s) ? s[1] : '';
@@ -1402,7 +1401,7 @@ class Component extends DCLogic {
       hint: o.type === 'DOCTOR' ? 'Достаточно фамилии — имя и отчество уточняют поиск' : '',
       hasHint: o.type === 'DOCTOR',
       allLabel: this.OT[o.type][2] + ' — без выбора конкретного',
-      placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : needOffice ? 'Сначала выберите медофис' : (two ? two[by][1] : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…')),
+      placeholder: locked ? (o.all ? 'Не требуется — выбраны все' : 'Не требуется — отбор по отмеченным значениям') : needOffice ? 'Сначала выберите медофис' : items.length ? 'Выбрано одно значение — начните вводить, чтобы заменить' : (two ? two[by][1] : (this.SEARCH_PLACEHOLDER[o.type] || 'Начните вводить…')),
       inputStyle: field(!!err && !needOffice, locked || needOffice),
       inputDisabled: locked || needOffice,
       isCabinet: isCab,
@@ -1485,8 +1484,8 @@ class Component extends DCLogic {
     curId: 'a1b2c3d4', cardTab: 'overview', editMode: !!this.props.initialEdit,
     wizardOpen: !!this.props.initialWizard, step: this.props.initialStep || 1,
     scopeRows: [
-      { id: 1, type: 'MED_OFFICE', value: '', items: ['КОЗЛОВ-К — Медофис Козлов, Казань', 'ИВАН-ЗЕЛ-ЮН — Медофис Иван, Зеленоград, Юность'], all: false, account: '', extra: [], region: '' },
-      { id: 2, type: 'CABINET', office: '', value: '', items: ['УЗИ-1', 'Процедурный'], all: false, account: '', extra: [], region: '' },
+      { id: 1, type: 'MED_OFFICE', value: '', items: ['КОЗЛОВ-К — Медофис Козлов, Казань'], all: false, account: '', extra: [], region: '' },
+      { id: 2, type: 'CABINET', office: '', value: '', items: ['УЗИ-1'], all: false, account: '', extra: [], region: '' },
       { id: 3, type: 'PRODUCT', value: '', all: true, account: '', extra: [], region: '' }
     ],
     ruleMode: this.props.initialRuleMode || 'existing', ruleQuery: this.props.initialRuleQuery || '', selectedRule: 'r1',
